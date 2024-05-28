@@ -1,6 +1,6 @@
 ## Feladatok
 
-- [ ] ### A program leírása
+- [ ] A program leírása
   - [ ] Játékmenet
     - [ ] Saját bővítések a játékhoz
   - [ ] Grafikus felület
@@ -8,9 +8,9 @@
   - [ ] Kimenetek
   - [ ] A hálózati kommunikációból adódó kiugró esetek kezelése
 
-- [ ] ### Skeleton ???
+- [ ] Skeleton ???
 
-- [ ] ### Technikai döntések/leírások
+- [ ] Technikai döntések/leírások
   - [ ] szkriptnyelv
   - [ ] motornyelv
   - [ ] Modell tervei
@@ -24,11 +24,11 @@
     - [ ] Csak centralizált?
     - [ ] NAT?
 
-- [ ] ### Dokumentáció
+- [ ] Dokumentáció
   - [ ] Minden nem a névből egyértelmű függvényre javadoc-szerű
   - [ ] Minden osztálynak leírás
 
-- [ ] ### Tesztelés
+- [ ] Tesztelés
   - [ ] ( _Unit tesztek minden bonyolultabb műveletnél_ )
   - [ ] Automatikus validáció (github actions pl.)
   - [ ] Modell
