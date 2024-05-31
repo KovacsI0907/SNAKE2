@@ -17,7 +17,8 @@ Ebben a játékban a maximális játékosok száma 4.
 
 ### Pálya
 A pálya rácsokból áll. A pálya mérete a játékosszámhoz  alkalmazkodik (például 4 játékos esetén nagyobb a pálya, mint 3 játékos esetén). A játék során a pálya szűkül.
--Vannak a pályán obsticale-ök amiknek ha nekimegy a játékos akkor meghal (a támadő gyümölcsel megy neki akkor viszont lerombolja és nem hal meg)
+
+- Vannak a pályán obsticale-ök amiknek ha nekimegy a játékos akkor meghal (a támadő gyümölcsel megy neki akkor viszont lerombolja és nem hal meg)
 
 ### Különleges esetek 
 - Két játékos szembe megy egymással és ütköznek: a kevesebb pontal rendelkező (kissebb) játékos kiesik, a nagyobb pedig elveszít annyi pontot mint amennyi a kissebbnek volt.
