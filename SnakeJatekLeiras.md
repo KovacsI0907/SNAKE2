@@ -3,7 +3,7 @@ A játék a mindenki által ismert snake játék egy többjátékos online vált
 
 ### Gyümölcsök
 - **Felgyorsító gyümölcs**: Felgyorsítja azt a játékost, aki megette.
-- **Evési lehetőséget adó gyümölcs**: Egy adott időre lehetőséget ad a játékosnak más játékosok kígyójának megevésére. Ha ennek a gyümölcsnek a hatása alatt a játékos átmegy egy másik játékos kígyójának egy részén, akkor azt a játékos elveszti.
+- **Támadó gyümölcs**: Egy adott időre lehetőséget ad a játékosnak más játékosok kígyójának megevésére. Ha ennek a gyümölcsnek a hatása alatt a játékos átmegy egy másik játékos kígyójának egy részén, akkor azt a játékos elveszti.
 - **Bemenet megfordító gyümölcs**: Egy véletlenszerű játékosnak (kivétel az, aki megette) adott időre megfordítja a bementeit.
 - **Lassító gyümölcs**: Lassítja azt a játékost, aki megette.
 - **Több pontot adó gyümölcs**: Több pontot ad, mint az alap gyümölcs.
