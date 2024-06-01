@@ -10,7 +10,9 @@ A gyümölcsöket aktiválni kell miután megettük, hogy az effectet megkapd. A
 - **Bemenet megfordító gyümölcs**: Egy véletlenszerű játékosnak (kivétel az, aki megette) adott időre megfordítja a bementeit.
 - **Lassító gyümölcs**: Lassítja a legközlebbi játékost (a megevőn kívül).
 - **Több pontot adó gyümölcs**: Több pontot ad, mint az alap gyümölcs.
-- **Teleportkapu**: Átteleportálja azt a játékost, aki belement.
+
+### Teleportkapu
+Átteleportálja azt a játékost, aki belement.
 
 ### Játékosszám
 Ebben a játékban a maximális játékosok száma 4.
