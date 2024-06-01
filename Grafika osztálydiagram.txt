@@ -1,0 +1,107 @@
+/'
+www.planttext.com
+'/
+
+@startuml
+
+skin rose
+
+enum Direction {
+up
+down
+right
+left
+}
+
+class Scene{
+  +void addLight(Light light)
+  +void draw()
+  +void updateGPU()
+  +void create()
+}
+
+abstract class Light{
+  +{abstract}vec4 getIntensity(vec3 point)
+  +{abstract}vec3 getDir(vec3 point)
+}
+
+abstract class Entity{
+  +{abstract} void create()
+  +{abstract} void draw()
+}
+
+class SnakePiece{
+  +void draw()
+  +void setPosition(vec3 pos)
+  +void setStartDirection(Direction dir)
+  +void setEndDirection(Direction dir)
+}
+
+class Fruit
+
+class Map{
+  + void draw()
+  + void create()
+}
+abstract class Tile{
+  + {abstract} void draw()
+  + {abstract} void create()
+}
+class GrassTile
+class MountainTile
+class PortalTile
+
+class Snake {
+  - color : vec4
+  + void draw()
+  + void create()
+}
+
+class GpuObject{
+  + void setVertices(vector<vec3> vertices)
+  + void setNormals(vector<vec3> normals)
+  + void addVertex(vec3 vertex)
+  + void addNormal(vec3 vertex)
+  + void clear()
+  + void disableImplicitUpdates()
+  + void enableImplicitUpdates()
+  + void updateGPU()
+  + void draw()
+  + void create()
+}
+
+class TexturedObject {
+  + void setUVs(vector<vec2> uvs)
+  + void addUV(vec2 uv)
+  + void clear()
+}
+
+class Material
+
+class Texture2D
+
+Scene "*" *-- Entity
+Scene "*" *-- Light
+
+Snake "1..*" *-- SnakePiece
+
+Entity <|-- Snake
+Entity <|-- SnakePiece
+Entity <|-- Fruit
+Entity <|-- Map
+
+GpuObject <|-- TexturedObject
+GpuObject "1" *-- Material
+TexturedObject "1" *-- Texture2D
+
+SnakePiece "1" *-- GpuObject
+
+Map "*" *-- Tile
+Tile <|-- GrassTile
+Tile <|-- MountainTile
+Tile <|-- PortalTile
+
+Fruit "1" *-- GpuObject
+Tile "1" *-- GpuObject
+
+@enduml
