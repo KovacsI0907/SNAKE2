@@ -6,13 +6,6 @@ www.planttext.com
 
 skin rose
 
-enum Direction {
-up
-down
-right
-left
-}
-
 class Scene{
   +void addLight(Light light)
   +void draw()
@@ -31,13 +24,26 @@ abstract class Entity{
 }
 
 class SnakePiece{
+  + {static} const int subdivResolution
+  - vec2 position {get, set}
+  - float t
+  - int pieceIndex
+  - boolean isExpanded
+  - float expansionPosition
+  - Direction startDirection {get, set}
+  - Direction endDirection {get, set}
   +void draw()
   +void setPosition(vec3 pos)
-  +void setStartDirection(Direction dir)
-  +void setEndDirection(Direction dir)
+  +void expandAt(float t)
 }
 
-class Fruit
+enum PieceType {
+  head,
+  middle,
+  tail
+}
+
+abstract class Fruit
 
 class Map{
   + void draw()
@@ -50,7 +56,6 @@ abstract class Tile{
 class GrassTile
 class MountainTile
 class PortalTile
-
 class Snake {
   - color : vec4
   + void draw()
@@ -58,27 +63,34 @@ class Snake {
 }
 
 class GpuObject{
-  + void setVertices(vector<vec3> vertices)
-  + void setNormals(vector<vec3> normals)
+  # vector<vec3> vertices {const get, set}
+  # vector<vec3> normals {const get, set}
+  # vector<vec3> uvs {const get, set}
   + void addVertex(vec3 vertex)
   + void addNormal(vec3 vertex)
+  + void addUV(vec2 uv)
   + void clear()
   + void disableImplicitUpdates()
   + void enableImplicitUpdates()
   + void updateGPU()
-  + void draw()
+  + void draw(int type)
   + void create()
+  + void setMaterial(Material mat)
 }
 
-class TexturedObject {
-  + void setUVs(vector<vec2> uvs)
-  + void addUV(vec2 uv)
-  + void clear()
+abstract class Material{
+  +{abstract} void activate()
 }
 
-class Material
+class TexturedMaterial{
+  + void create()
+  + void activate()
+}
 
-class Texture2D
+abstract class Texture2D{
+  +{abstract} void create()
+  +{abstract} void updateGPU()
+}
 
 Scene "*" *-- Entity
 Scene "*" *-- Light
@@ -90,9 +102,9 @@ Entity <|-- SnakePiece
 Entity <|-- Fruit
 Entity <|-- Map
 
-GpuObject <|-- TexturedObject
 GpuObject "1" *-- Material
-TexturedObject "1" *-- Texture2D
+Material <|-- TexturedMaterial
+TexturedMaterial "1" o-- Texture2D
 
 SnakePiece "1" *-- GpuObject
 
@@ -103,5 +115,10 @@ Tile <|-- PortalTile
 
 Fruit "1" *-- GpuObject
 Tile "1" *-- GpuObject
+
+SnakePiece "1" *-- PieceType
+
+
+
 
 @enduml
