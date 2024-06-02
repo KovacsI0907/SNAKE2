@@ -9,11 +9,13 @@
 ### Frissítés
 - `SnakeStepEvent` : `SnakeUpdatePacket`
 A SnakeStepEvent a kígyó lépése után kell hogy meghívódjon és a SnakeUpdatePacket-et kell elküldenie. Ez tartalmazza a kígyó új hosszát és a fej új pozícióját.
-- `SnakeDeathEvent` : `SnakeDeathPacket`
+- `SnakeDeathEvent` : `SnakeDeathPacket`c
 - `TileStateChangedEvent` : `TileStatePacket`
 A Tile állapotának változásakor (a kör szűkülésekor)
-- `GameItemDeletedEvent` : `GameItemDeletePacket`
+- `GameItemDeletedEvent` : `ItemDeletePacket`
 Bármilyen törlés esetén (pl.: evéskor vagy obstacle megsemmisítésekor is)
+- `PowerUsedEvent` : `EffectsChangedPacket`
+- `EffectExpiredEvent` : `EffectsChangedPacket`
 
 ### Általános
 - `GameStartEvent` : `GameStartPacket`
