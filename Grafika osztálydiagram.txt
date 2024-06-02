@@ -43,7 +43,7 @@ enum PieceType {
   tail
 }
 
-abstract class Fruit
+abstract class GameItem
 
 class Map{
   + void draw()
@@ -52,6 +52,11 @@ class Map{
 abstract class Tile{
   + {abstract} void draw()
   + {abstract} void create()
+}
+enum TileState{
+  green
+  yellow
+  red
 }
 class GrassTile
 class MountainTile
@@ -99,7 +104,7 @@ Snake "1..*" *-- SnakePiece
 
 Entity <|-- Snake
 Entity <|-- SnakePiece
-Entity <|-- Fruit
+Entity <|-- GameItem
 Entity <|-- Map
 
 GpuObject "1" *-- Material
@@ -113,11 +118,10 @@ Tile <|-- GrassTile
 Tile <|-- MountainTile
 Tile <|-- PortalTile
 
-Fruit "1" *-- GpuObject
 Tile "1" *-- GpuObject
 
 SnakePiece "1" *-- PieceType
-
+Tile "1" *-- TileState
 
 
 
