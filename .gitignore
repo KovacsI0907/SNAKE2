@@ -1,1 +1,3 @@
-/graphics/build/
+/graphics/build/*
+/graphics/cmake.checksum
+/graphics/bin/*
