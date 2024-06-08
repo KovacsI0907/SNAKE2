@@ -1,0 +1,75 @@
+@startuml
+
+skin rose
+
+interface Serializable
+
+abstract class Packet {
+  +{abstract} void onArrival(MessageHandler handler)
+}
+
+class MessageHandler
+class ServerMessageHandler
+class ClientMessageHandler
+
+MessageHandler <|-- ServerMessageHandler
+MessageHandler <|-- ClientMessageHandler
+
+Serializable <|-- Packet
+
+class GameItemPacket {
+  - ItemType type
+  - Vec2 position
+}
+
+class PlayerSnakePacket {
+  - String playerName
+  - Color playerColor
+  - int length
+  - Vec2[] segmentPositions
+}
+
+class TilePacket {
+  - TileType type
+  - TileState state
+  - vec2 position
+}
+
+class SnakeUpdatePacket {
+  String playerName
+  int displayLength
+  vec2 headPosition
+}
+
+class EffectsChangedPacket {
+  - String playerName
+  - EffectType type
+  - boolean added
+}
+
+class SnakeDeathPacket {
+  - String playerName
+}
+
+class TileStatePacket {
+  - vec2 tilePosition
+  - TileState state
+}
+
+class ItemDeletePacket {
+  - vec2 position
+}
+
+class GameStartPacket {
+}
+
+class GameEndPacket {
+  - String winnerName
+}
+
+class NetworkErrorPacket {
+  - ErrorType ErrorType
+  - String errorMessage
+}
+
+@enduml

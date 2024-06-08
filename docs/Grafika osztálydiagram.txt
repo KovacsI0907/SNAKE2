@@ -1,0 +1,128 @@
+/'
+www.planttext.com
+'/
+
+@startuml
+
+skin rose
+
+class Scene{
+  +void addLight(Light light)
+  +void draw()
+  +void updateGPU()
+  +void create()
+}
+
+abstract class Light{
+  +{abstract}vec4 getIntensity(vec3 point)
+  +{abstract}vec3 getDir(vec3 point)
+}
+
+abstract class Entity{
+  +{abstract} void create()
+  +{abstract} void draw()
+}
+
+class SnakePiece{
+  + {static} const int subdivResolution
+  - vec2 position {get, set}
+  - float t
+  - int pieceIndex
+  - boolean isExpanded
+  - float expansionPosition
+  - Direction startDirection {get, set}
+  - Direction endDirection {get, set}
+  +void draw()
+  +void setPosition(vec3 pos)
+  +void expandAt(float t)
+}
+
+enum PieceType {
+  head,
+  middle,
+  tail
+}
+
+abstract class GameItem
+
+class Map{
+  + void draw()
+  + void create()
+}
+abstract class Tile{
+  + {abstract} void draw()
+  + {abstract} void create()
+}
+enum TileState{
+  green
+  yellow
+  red
+}
+class GrassTile
+class MountainTile
+class PortalTile
+class Snake {
+  - color : vec4
+  + void draw()
+  + void create()
+}
+
+class GpuObject{
+  # vector<vec3> vertices {const get, set}
+  # vector<vec3> normals {const get, set}
+  # vector<vec3> uvs {const get, set}
+  + void addVertex(vec3 vertex)
+  + void addNormal(vec3 vertex)
+  + void addUV(vec2 uv)
+  + void clear()
+  + void disableImplicitUpdates()
+  + void enableImplicitUpdates()
+  + void updateGPU()
+  + void draw(int type)
+  + void create()
+  + void setMaterial(Material mat)
+}
+
+abstract class Material{
+  +{abstract} void activate()
+}
+
+class TexturedMaterial{
+  + void create()
+  + void activate()
+}
+
+abstract class Texture2D{
+  +{abstract} void create()
+  +{abstract} void updateGPU()
+}
+
+Scene "*" *-- Entity
+Scene "*" *-- Light
+
+Snake "1..*" *-- SnakePiece
+
+Entity <|-- Snake
+Entity <|-- SnakePiece
+Entity <|-- GameItem
+Entity <|-- Map
+
+GpuObject "1" *-- Material
+Material <|-- TexturedMaterial
+TexturedMaterial "1" o-- Texture2D
+
+SnakePiece "1" *-- GpuObject
+
+Map "*" *-- Tile
+Tile <|-- GrassTile
+Tile <|-- MountainTile
+Tile <|-- PortalTile
+
+Tile "1" *-- GpuObject
+
+SnakePiece "1" *-- PieceType
+Tile "1" *-- TileState
+
+
+
+@enduml
