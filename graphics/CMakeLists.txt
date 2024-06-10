@@ -15,6 +15,13 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+find_package(OpenGL REQUIRED)
+
+include_directories(
+	external/freeglut/include
+	external/glew/include
+)
+
 # Include directories
 include_directories(src)
 include_directories(src/module1)
@@ -32,6 +39,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Add the executable
 add_executable(snakegraphics ${SOURCES})
+
+target_link_libraries(snakegraphics
+	${OPENGL_LIBRARY} # filled by "find_package(OpenGL REQUIRED)"
+	#${CMAKE_SOURCE_DIR}/external/freeglut/lib/Release/freeglut.lib
+	${CMAKE_SOURCE_DIR}/external/freeglut/lib/Debug/freeglutd.lib
+	${CMAKE_SOURCE_DIR}/external/glew/lib/Release/x64/glew32.lib
+	#${CMAKE_SOURCE_DIR}/external/glew/lib/Debug/x64/glew32d.lib
+)
 
 # GOOGLE TEST
 enable_testing()
