@@ -1,0 +1,5 @@
+﻿  Building Custom Rule C:/dev/SNAKE2/graphics/external/freeglut/CMakeLists.txt
+  spaceball.c
+  vmath.c
+  Generating Code...
+  spaceball.vcxproj -> C:\dev\SNAKE2\graphics\external\freeglut\bin\Debug\spaceballd.exe
