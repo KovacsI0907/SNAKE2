@@ -18,7 +18,6 @@
 #endif
 
 const unsigned int windowWidth = 600, windowHeight = 600;
-
 // OpenGL major and minor versions
 int majorVersion = 3, minorVersion = 3;
 
