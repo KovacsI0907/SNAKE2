@@ -1,0 +1,10 @@
+^C:\DEV\SNAKE2\GRAPHICS\EXTERNAL\FREEGLUT\CMAKEFILES\7C38E98BEA9654B0C2C28D7A34070DAA\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/dev/SNAKE2/graphics/external/freeglut -BC:/dev/SNAKE2/graphics/external/freeglut --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/dev/SNAKE2/graphics/external/freeglut/freeglut.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
