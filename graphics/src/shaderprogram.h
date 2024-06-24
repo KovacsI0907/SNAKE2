@@ -158,6 +158,6 @@ public:
 
 	void setUniform(const char* name, mat4 mat) {
 		int location = getUnifromLocation(name);
-		glUniformMatrix4fv(location, GL_TRUE, false, &mat[0][0]);
+		glUniformMatrix4fv(location, 1, GL_TRUE, &mat[0][0]);
 	}
 };
