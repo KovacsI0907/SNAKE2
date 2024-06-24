@@ -45,6 +45,11 @@ struct vec3 {
 
     vec3() : x(0), y(0), z(0) {}
     vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+    vec3(const vec2& v, float z) : x(v.x), y(v.y), z(z) {}
+
+    vec2 xy() const {
+        return vec2(x, y);
+    }
 
     vec3 operator+(const vec3& other) const {
         return vec3(x + other.x, y + other.y, z + other.z);
@@ -85,6 +90,16 @@ struct vec4 {
 
     vec4() : x(0), y(0), z(0), w(0) {}
     vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+    vec4(const vec2& v, float z, float w) : x(v.x), y(v.y), z(z), w(w) {}
+    vec4(const vec3& v, float w) : x(v.x), y(v.y), z(v.z), w(w) {}
+
+    vec3 xyz() const {
+        return vec3(x, y, z);
+    }
+
+    vec2 xy() const {
+        return vec2(x, y);
+    }
 
     vec4 operator+(const vec4& other) const {
         return vec4(x + other.x, y + other.y, z + other.z, w + other.w);
@@ -128,6 +143,16 @@ struct mat4 {
         rows[0][0] = rows[1][1] = rows[2][2] = rows[3][3] = diagonal;
     }
 
+    mat4(float v00, float v01, float v02, float v03,
+        float v10, float v11, float v12, float v13,
+        float v20, float v21, float v22, float v23,
+        float v30, float v31, float v32, float v33) {
+        rows[0][0] = v00; rows[0][1] = v01; rows[0][2] = v02; rows[0][3] = v03;
+        rows[1][0] = v10; rows[1][1] = v11; rows[1][2] = v12; rows[1][3] = v13;
+        rows[2][0] = v20; rows[2][1] = v21; rows[2][2] = v22; rows[2][3] = v23;
+        rows[3][0] = v30; rows[3][1] = v31; rows[3][2] = v32; rows[3][3] = v33;
+    }
+
     static mat4 identity() {
         return mat4(1.0f);
     }
@@ -162,5 +187,32 @@ struct mat4 {
         return rows[index];
     }
 };
+
+mat4 ScaleMatrix(vec3 s) {
+    return mat4(
+        s.x, 0.0f, 0.0f, 0.0f,
+        0.0f, s.y, 0.0f, 0.0f,
+        0.0f, 0.0f, s.z, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+}
+
+mat4 TranslateMatrix(vec3 t) {
+    return mat4(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        t.x,  t.y,  t.z,  1.0f
+    );
+}
+
+vec4 operator*(const vec4& v, const mat4& m) {
+    return vec4(
+        v.x * m.rows[0][0] + v.y * m.rows[1][0] + v.z * m.rows[2][0] + v.w * m.rows[3][0],
+        v.x * m.rows[0][1] + v.y * m.rows[1][1] + v.z * m.rows[2][1] + v.w * m.rows[3][1],
+        v.x * m.rows[0][2] + v.y * m.rows[1][2] + v.z * m.rows[2][2] + v.w * m.rows[3][2],
+        v.x * m.rows[0][3] + v.y * m.rows[1][3] + v.z * m.rows[2][3] + v.w * m.rows[3][3]
+    );
+}
 
 #endif // VECTORS_H
