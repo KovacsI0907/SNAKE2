@@ -6,38 +6,14 @@
 #include <vectors.h>
 #include <shaderprogram.h>
 #include <vector>
+#include <shadersources.h>
 
 using namespace std;
 
 const unsigned int windowWidth = 640, windowHeight = 480;
 
-const char* vertexSource = R"(
-	#version 330
-	precision highp float;
-
-	uniform mat4 MVP;
-	layout(location = 0) in vec2 vp;
-
-	void main() {
-		gl_Position = vec4(vp.x, vp.y, 0, 1) * MVP;
-	}
-)";
-
-const char* fragmentSource = R"(
-	#version 330
-	precision highp float;
-	
-	uniform vec3 color;
-	out vec4 outColor;
-
-	void main() {
-		outColor = vec4(color,1);
-	}
-)";
-
-
 unsigned int vao;
-ShaderProgram shaderProgram = ShaderProgram(vertexSource, fragmentSource);
+ShaderProgram shaderProgram = ShaderProgram(VERTEX_SOURCE, FRAGMENT_SOURCE);
 
 void initialize() {
 	glViewport(0, 0, windowWidth, windowHeight);
