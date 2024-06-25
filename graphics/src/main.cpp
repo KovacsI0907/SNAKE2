@@ -1,3 +1,5 @@
+#define GLEW_STATIC
+#define FREEGLUT_STATIC
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #include <windows.h>
 #endif
@@ -38,7 +40,7 @@ void initialize() {
 }
 
 void onDisplay() {
-	glClearColor(0.2, 0.2, 0.2, 0);
+	glClearColor(0.2f, 0.2f, 0.2f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shaderProgram.setUniform("color", vec3(1.0f, 0.0f, 1.0f));
