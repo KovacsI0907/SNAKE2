@@ -9,19 +9,31 @@ add_executable(snakegraphics ${SRC_DIR}/main.cpp)
 
 find_package(OpenGL REQUIRED)
 
-add_library(glew_static STATIC IMPORTED)
-set_target_properties(glew_static PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/glew/libglew32d.lib)
-include_directories(${LIBRARY_DIR}/glew/include)
+include_directories(${SRC_DIR})
 
-add_library(freeglut_static STATIC IMPORTED)
-set_target_properties(freeglut_static PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/freeglut/freeglut_staticd.lib)
-include_directories(${LIBRARY_DIR}/freeglut/include)
+if(WIN32)
+	add_definitions(-DGLEW_STATIC -DFREEGLUT_STATIC)
 
-target_include_directories(snakegraphics PRIVATE ${SRC_DIR})
-target_include_directories(snakegraphics PUBLIC ${OPENGL_INCLUDE_DIR})
-
-target_link_libraries(snakegraphics 
-	${OPENGL_LIBRARIES}
-	glew_static
-	freeglut_static
-)
+	include_directories(${LIBRARY_DIR}/glew/include)
+	include_directories(${LIBRARY_DIR}/freeglut/include)
+	add_library(glew_static STATIC IMPORTED)
+	add_library(freeglut STATIC IMPORTED)
+	set_target_properties(glew_static PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/glew/libglew32d.lib)
+	set_target_properties(freeglut PROPERTIES IMPORTED_LOCATION ${LIBRARY_DIR}/freeglut/freeglut_staticd.lib)
+	
+	target_include_directories(snakegraphics PRIVATE ${SRC_DIR})
+	target_include_directories(snakegraphics PUBLIC ${OPENGL_INCLUDE_DIR})
+	
+	target_link_libraries(snakegraphics 
+		${OPENGL_LIBRARIES}
+		glew_static
+		freeglut
+	)
+elseif(UNIX)
+	link_directories(${GTKMM_LIBRARY_DIRS})
+	include_directories(${GTKMM_INCLUDE_DIRS})
+	
+	target_link_libraries(snakegraphics GL glut GLU GLEW)
+else()
+	message(FATAL_ERROR "Unsupported platform. This project supports only Windows and Unix-based systems.")
+endif()

@@ -1,5 +1,3 @@
-#define GLEW_STATIC
-#define FREEGLUT_STATIC
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #include <windows.h>
 #endif
