@@ -33,6 +33,10 @@ class ShaderProgram {
 	const char* fragmentSource;
 	const char* geometrySource;
 
+	unsigned int vertexShader = 0;
+	unsigned int fragmentShader = 0;
+	unsigned int geometryShader = 0;
+
 	unsigned int programHandle = 0;
 	bool linked = false;
 
@@ -46,7 +50,7 @@ public:
 	void compile() {
 		linked = false;
 
-		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		if (vertexShader == 0)
 			throw ShaderException("Error in vertex shader creation");
 
@@ -66,7 +70,7 @@ public:
 			throw ShaderException(logBuffer);
 		}
 
-		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		if (vertexShader == 0)
 			throw ShaderException("Error in fragment shader creation");
 
@@ -159,5 +163,13 @@ public:
 	void setUniform(const char* name, mat4 mat) {
 		int location = getUnifromLocation(name);
 		glUniformMatrix4fv(location, 1, GL_TRUE, &mat[0][0]);
+	}
+
+	~ShaderProgram() {
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteShader(geometryShader);
+
+		glDeleteProgram(programHandle);
 	}
 };
