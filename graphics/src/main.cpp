@@ -7,6 +7,7 @@
 #include <shaderprogram.h>
 #include <vector>
 #include <shadersources.h>
+#include <triangle.h>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ const unsigned int windowWidth = 640, windowHeight = 480;
 
 unsigned int vao;
 ShaderProgram shaderProgram = ShaderProgram(VERTEX_SOURCE, FRAGMENT_SOURCE);
+Triangle tri = Triangle(vec3(0, 0, 0), vec3(1, 1, 0), vec3(1, 0, 0));
 
 void initialize() {
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -32,6 +34,8 @@ void initialize() {
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	tri.create();
 	
 	shaderProgram.compile();
 	shaderProgram.use();
@@ -46,6 +50,8 @@ void onDisplay() {
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	tri.draw();
 	glutSwapBuffers();
 }
 
