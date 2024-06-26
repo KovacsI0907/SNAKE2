@@ -94,7 +94,28 @@ public:
 
 		glAttachShader(programHandle, vertexShader);
 		glAttachShader(programHandle, fragmentShader);
-		//TODO geometry shader
+
+		if (geometrySource[0] != '\0') {
+			geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+
+			if (geometryShader == 0)
+				throw ShaderException("Error in geometry shader creation");
+
+			glShaderSource(geometryShader, 1, &geometrySource, NULL);
+
+			glCompileShader(geometryShader);
+
+			glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &compileStatus);
+			if (!compileStatus) {
+				char logBuffer[2048];
+				int logLength;
+				glGetShaderInfoLog(geometryShader, 2048, &logLength, logBuffer);
+
+				throw ShaderException(logBuffer);
+			}
+
+			glAttachShader(programHandle, geometryShader);
+		}
 
 		glLinkProgram(programHandle);
 
