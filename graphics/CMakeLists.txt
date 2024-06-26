@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LIBRARY_DIR ${CMAKE_SOURCE_DIR}/libs)
 
-add_executable(snakegraphics ${SRC_DIR}/main.cpp)
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+add_executable(snakegraphics ${SOURCES})
 
 find_package(OpenGL REQUIRED)
 
