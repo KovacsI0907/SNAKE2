@@ -8,34 +8,17 @@
 #include <vector>
 #include <shadersources.h>
 #include <triangle.h>
+#include <cylinder.h>
 
 using namespace std;
 
 const unsigned int windowWidth = 640, windowHeight = 480;
 
-unsigned int vao;
-ShaderProgram shaderProgram = ShaderProgram(VERTEX_SOURCE, FRAGMENT_SOURCE);
+ShaderProgram shaderProgram = ShaderProgram(VERTEX_SOURCE, FRAGMENT_SOURCE, GEOMETRY_SOURCE);
 Triangle tri = Triangle(vec3(0, 0, 0), vec3(1, 1, 0), vec3(1, 0, 0));
 
 void initialize() {
 	glViewport(0, 0, windowWidth, windowHeight);
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	unsigned int vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	vector<vec2> vertices;
-	vertices.push_back(vec2(- 1, -1));
-	vertices.push_back(vec2(0, 0));
-	vertices.push_back(vec2(0, -0.5));
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(vec2), &vertices[0], GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	tri.create();
 	
 	shaderProgram.compile();
 	shaderProgram.use();
@@ -48,10 +31,6 @@ void onDisplay() {
 	shaderProgram.setUniform("color", vec3(1.0f, 0.0f, 1.0f));
 	shaderProgram.setUniform("MVP", mat4::identity());
 
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	tri.draw();
 	glutSwapBuffers();
 }
 
