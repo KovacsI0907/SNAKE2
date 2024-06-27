@@ -1,3 +1,5 @@
+#include <vectors.h>
+
 mat4 ScaleMatrix(vec3 s) {
     return mat4(
         s.x, 0.0f, 0.0f, 0.0f,
