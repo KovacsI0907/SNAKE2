@@ -194,4 +194,15 @@ mat4 TranslateMatrix(vec3 t);
 
 vec4 operator*(const vec4& v, const mat4& m);
 
+vec2 normalize(const vec2& v);
+vec3 normalize(const vec3& v);
+vec4 normalize(const vec4& v);
+
+float dot(const vec2& a, const vec2& b);
+float dot(const vec3& a, const vec3& b);
+float dot(const vec4& a, const vec4& b);
+
+vec3 cross(const vec3& a, const vec3& b);
+vec4 cross(const vec4& a, const vec4& b);
+
 #endif // VECTORS_H
