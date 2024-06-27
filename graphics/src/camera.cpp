@@ -32,3 +32,21 @@ mat4 PerspectiveCamera::projection() {
 
 	return fovNormalize * perspectiveTr;
 }
+
+mat4 OrthographicCamera::view() {
+	vec3 w = normalize(eye - lookAt);
+	vec3 u = normalize(cross(preferredUp, w));
+	vec3 v = cross(w, u);
+
+	mat4 toOrigin = TranslateMatrix(eye * (-1.0f));
+	mat4 viewTr = mat4(u.x, v.x, w.x, 0,
+		u.y, v.y, w.y, 0,
+		u.z, v.z, w.z, 0,
+		0, 0, 0, 1);
+
+	return toOrigin * viewTr;
+}
+
+mat4 OrthographicCamera::projection() {
+	return ScaleMatrix(vec3(2 / (aspectRatio * height), 2 / height, -2 / depth)) * TranslateMatrix(vec3(0, 0, -0.5));
+}
