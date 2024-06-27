@@ -3,7 +3,7 @@ project(snakegraphics)
 
 set(CMAKE_CXX_STANDARD 17)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(LIBRARY_DIR ${CMAKE_SOURCE_DIR}/libs)
+set(LIBRARY_DIR ${CMAKE_SOURCE_DIR}/external)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
