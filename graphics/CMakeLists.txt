@@ -6,8 +6,9 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LIBRARY_DIR ${CMAKE_SOURCE_DIR}/external)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
 
-add_executable(snakegraphics ${SOURCES})
+add_executable(snakegraphics ${SOURCES} ${HEADERS})
 
 find_package(OpenGL REQUIRED)
 
