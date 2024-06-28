@@ -10,50 +10,65 @@
 #include <triangle.h>
 #include <cylinder.h>
 #include <camera.h>
+#include <scene.h>
+#include <exception>
 
 
 const unsigned int windowWidth = 640, windowHeight = 480;
 
-ShaderProgram shaderProgram = ShaderProgram(VERTEX_SOURCE, FRAGMENT_SOURCE);
+ShaderProgram shaderProgram = ShaderProgram(GOURAUD_VERTEX, GOURAUD_FRAGMENT);
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, 3, 100);
-Camera* activeCam = &pCam;
-Cylinder cyl = Cylinder(50);
-Triangle tri = Triangle(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
+
+Scene scene = Scene();
+Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
+
+Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f };
+Material triMat = { vec4(1, 1, 1, 1), vec4(1, 1, 0, 0), vec4(0,0,0,1), 25.0f };
+Cylinder* cyl = new Cylinder(50);
+Triangle* tri = new Triangle(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
+
 
 void initialize() {
 	glViewport(0, 0, windowWidth, windowHeight);
 
 	glEnable(GL_DEPTH_TEST);
 
-	cyl.create();
-	tri.create();
+	scene.shaderProgram = &shaderProgram;
+	scene.camera = &pCam;
+	scene.light = light;
+
+	Object* c = new Object(cyl, cylMat);
+	Object* t = new Object(tri, triMat);
+
+	scene.addObject(c);
+	scene.addObject(t);
 	
-	shaderProgram.compile();
-	shaderProgram.use();
+	try {
+		shaderProgram.compile();
+		shaderProgram.use();
+	}
+	catch (const std::exception& e) {
+		printf("%s\n", e.what());
+	}
 }
 
 void onDisplay() {
 	glClearColor(0.2f, 0.2f, 0.2f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	shaderProgram.setUniform("color", vec3(1.0f, 0.0f, 1.0f));
-	shaderProgram.setUniform("MVP", activeCam->view() * activeCam->projection());
-
-	tri.draw();
-	shaderProgram.setUniform("color", vec3(1.0f, 1.0f, 0.0f));
-	cyl.draw();
+	scene.drawAll();
 
 	glutSwapBuffers();
 }
 
 void onKeyPressed(unsigned char key, int x, int y) {
 	if (key == 'c') {
-		if (activeCam == &pCam) {
-			activeCam = &oCam;
+		if (scene.camera == &pCam) {
+			scene.camera = &oCam;
 		}
 		else {
-			activeCam = &pCam;
+			scene.camera = &pCam;
 		}
 	}
 	glutPostRedisplay();

@@ -25,6 +25,7 @@ protected:
 	std::vector<vec3> vertices;
 	std::vector<vec3> normals;
 	std::vector<vec2> uvs;
+	bool wasCreated = false;
 
 public:
 	Geometry() {}
@@ -34,6 +35,10 @@ public:
 	void draw(GLenum mode);
 
 	virtual void draw() = 0;
+
+	bool created() {
+		return wasCreated;
+	}
 
 	~Geometry();
 };

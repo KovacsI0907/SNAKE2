@@ -1,4 +1,4 @@
-const char* VERTEX_SOURCE = R"(
+const char* PASSTHROUGH_VERTEX = R"(
 	#version 330
 	precision highp float;
 
@@ -10,7 +10,7 @@ const char* VERTEX_SOURCE = R"(
 	}
 )";
 
-const char* FRAGMENT_SOURCE = R"(
+const char* PASSTHROUGH_FRAGMENT = R"(
 	#version 330
 	precision highp float;
 	
@@ -22,7 +22,7 @@ const char* FRAGMENT_SOURCE = R"(
 	}
 )";
 
-const char* GEOMETRY_SOURCE = R"(
+const char* PASSTHROUGH_GEOMETRY = R"(
 	#version 330 
 
 	layout(triangles) in;
@@ -35,5 +35,60 @@ const char* GEOMETRY_SOURCE = R"(
 			EmitVertex();
 		}
 		EndPrimitive();
+	}
+)";
+
+const char* GOURAUD_VERTEX = R"(
+	#version 330
+
+	uniform vec4 radAmbient;
+	uniform vec4 radLight;
+
+	uniform vec4 coeffAmbient;
+	uniform vec4 coeffDiffuse;
+	uniform vec4 coeffSpecular;
+	
+	uniform float shine;
+
+	uniform vec4 wLightPos;
+	uniform vec3 wEyePos;
+	
+	uniform mat4 MVP;
+	uniform mat4 M;
+	uniform mat4 Minv;
+
+	layout (location = 0) in vec3 mVertexPos;
+	layout (location = 1) in vec3 mNormal;
+
+	out vec4 color;
+
+	void main() {
+		gl_Position = vec4(mVertexPos, 1) * MVP;
+		
+		vec4 wVertexPos = vec4(mVertexPos, 1) * M;
+		vec3 L = normalize(wLightPos.xyz * wVertexPos.w - wVertexPos.xyz * wLightPos.w);
+		vec3 V = normalize(wEyePos - wVertexPos.xyz/wVertexPos.w);
+		vec4 wNormal = vec4(mNormal, 0) * Minv;
+		vec3 N = normalize(wNormal.xyz);
+		float cosAngleLN = max(dot(N, L), 0);
+		vec3 halfway = normalize(L+V);
+		float cosAngleHN = max(dot(N, halfway), 0);
+		
+		vec4 ambient = radAmbient * coeffAmbient;
+		vec4 diffuse = radLight * coeffDiffuse * cosAngleLN;
+		vec4 specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
+
+		color = ambient + diffuse + specular;
+	}
+	
+)";
+
+const char* GOURAUD_FRAGMENT = R"(
+	#version 330
+
+	in vec4 color;
+	out vec4 fragmentColor;
+	void main() {
+		fragmentColor = color;
 	}
 )";
