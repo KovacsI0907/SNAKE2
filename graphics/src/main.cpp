@@ -16,7 +16,9 @@
 
 const unsigned int windowWidth = 640, windowHeight = 480;
 
-ShaderProgram shaderProgram = ShaderProgram(GOURAUD_VERTEX, GOURAUD_FRAGMENT);
+ShaderProgram shaderProgramGouraud = ShaderProgram(GOURAUD_VERTEX, GOURAUD_FRAGMENT);
+ShaderProgram shaderProgramPhong = ShaderProgram(PHONG_VERTEX, PHONG_FRAGMENT);
+
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, 3, 100);
 
@@ -25,7 +27,7 @@ Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
 
 Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f };
 Material triMat = { vec4(1, 1, 1, 1), vec4(1, 1, 0, 0), vec4(0,0,0,1), 25.0f };
-Cylinder* cyl = new Cylinder(50);
+Cylinder* cyl = new Cylinder(5);
 Triangle* tri = new Triangle(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
 
 
@@ -34,7 +36,7 @@ void initialize() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	scene.shaderProgram = &shaderProgram;
+	scene.shaderProgram = &shaderProgramGouraud;
 	scene.camera = &pCam;
 	scene.light = light;
 
@@ -45,8 +47,9 @@ void initialize() {
 	scene.addObject(t);
 	
 	try {
-		shaderProgram.compile();
-		shaderProgram.use();
+		shaderProgramGouraud.compile();
+		shaderProgramGouraud.use();
+		shaderProgramPhong.compile();
 	}
 	catch (const std::exception& e) {
 		printf("%s\n", e.what());
@@ -70,6 +73,16 @@ void onKeyPressed(unsigned char key, int x, int y) {
 		else {
 			scene.camera = &pCam;
 		}
+	}
+
+	if (key == 's') {
+		if (scene.shaderProgram == &shaderProgramGouraud) {
+			scene.shaderProgram = &shaderProgramPhong;
+		}
+		else {
+			scene.shaderProgram = &shaderProgramGouraud;
+		}
+		scene.shaderProgram->use();
 	}
 	glutPostRedisplay();
 }
