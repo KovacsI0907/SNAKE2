@@ -59,8 +59,13 @@ const char* GOURAUD_VERTEX = R"(
 
 	layout (location = 0) in vec3 mVertexPos;
 	layout (location = 1) in vec3 mNormal;
+	layout (location = 2) in vec2 uv;
 
-	out vec4 color;
+	out vec4 diffuseMult;
+	out vec4 ambient;
+	out vec4 specular;
+	out vec4 diffuse;
+	out vec2 texCoord;
 
 	void main() {
 		gl_Position = vec4(mVertexPos, 1) * MVP;
@@ -74,11 +79,12 @@ const char* GOURAUD_VERTEX = R"(
 		vec3 halfway = normalize(L+V);
 		float cosAngleHN = max(dot(N, halfway), 0);
 		
-		vec4 ambient = radAmbient * coeffAmbient;
-		vec4 diffuse = radLight * coeffDiffuse * cosAngleLN;
-		vec4 specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
+		ambient = radAmbient * coeffAmbient;
+		diffuse = radLight * coeffDiffuse * cosAngleLN;
+		diffuseMult = radLight * cosAngleLN;
+		specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
 
-		color = ambient + diffuse + specular;
+		texCoord = uv;
 	}
 	
 )";
@@ -86,10 +92,22 @@ const char* GOURAUD_VERTEX = R"(
 const char* GOURAUD_FRAGMENT = R"(
 	#version 330
 
-	in vec4 color;
+	uniform sampler2D sampler;
+	uniform bool hasTexture;
+
+	in vec4 ambient;
+	in vec4 specular;
+	in vec4 diffuseMult;
+	in vec4 diffuse;
+	in vec2 texCoord;
+
 	out vec4 fragmentColor;
 	void main() {
-		fragmentColor = color;
+		if(hasTexture){
+			fragmentColor = ambient + specular + diffuseMult * texture(sampler, texCoord);
+		}else{
+			fragmentColor = ambient + specular + diffuse;
+		}
 	}
 )";
 
@@ -105,10 +123,12 @@ const char* PHONG_VERTEX = R"(
 
 	layout (location = 0) in vec3 mVertexPos;
 	layout (location = 1) in vec3 mNormal;
+	layout (location = 2) in vec2 uv;
 
 	out vec3 wToLight;
 	out vec3 wNormal;
 	out vec3 wToEye;
+	out vec2 texCoord;
 
 	void main() {
 		gl_Position = vec4(mVertexPos, 1) * MVP;
@@ -117,6 +137,7 @@ const char* PHONG_VERTEX = R"(
 		wToLight = wLightPos.xyz*wVertexPos.w - wVertexPos.xyz*wLightPos.w;
 		wNormal = (vec4(mNormal, 0) * Minv).xyz;
 		wToEye = wEyePos - wVertexPos.xyz/wVertexPos.w;
+		texCoord = uv;
 	}
 )";
 
@@ -132,9 +153,14 @@ const char* PHONG_FRAGMENT = R"(
 	
 	uniform float shine;
 
+	uniform sampler2D sampler;
+	uniform bool hasTexture;
+
 	in vec3 wToLight;
 	in vec3 wNormal;
 	in vec3 wToEye;
+
+	in vec2 texCoord;
 
 	out vec4 fragmentColor;
 
@@ -148,7 +174,14 @@ const char* PHONG_FRAGMENT = R"(
 		float cosAngleHN = max(dot(N, halfway), 0);
 
 		vec4 ambient = radAmbient * coeffAmbient;
-		vec4 diffuse = radLight * coeffDiffuse * cosAngleLN;
+
+		vec4 diffuse = radLight * cosAngleLN;
+		if(hasTexture){
+			diffuse *= texture(sampler, texCoord);
+		}else{
+			diffuse *= coeffDiffuse;
+		}
+
 		vec4 specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
 
 		fragmentColor = ambient + diffuse + specular;
