@@ -29,6 +29,10 @@ public:
 	}
 };
 
+
+/// <summary>
+/// Handles compiling, linking and activating pairs of vertex and fragment (and geometry) shaders. Gives functions for uploading uniform variables.
+/// </summary>
 class ShaderProgram {
 	const char* vertexSource;
 	const char* fragmentSource;
@@ -42,12 +46,23 @@ class ShaderProgram {
 	bool linked = false;
 
 public:
+
+	/// <summary>
+	/// Initializes the class with the given sources.
+	/// DOES NOT TAKE OWNERSHIP of the given c-strings.
+	/// </summary>
+	/// <param name="vertSrc"></param>
+	/// <param name="fragSrc"></param>
+	/// <param name="geoSrc">Optional</param>
 	ShaderProgram(const char* vertSrc, const char* fragSrc, const char* geoSrc = "") {
 		vertexSource = vertSrc;
 		fragmentSource = fragSrc;
 		geometrySource = geoSrc;
 	}
 
+	/// <summary>
+	/// Compiles and links sources. Throws ShaderException if compilation or linking fails.
+	/// </summary>
 	void compile() {
 		linked = false;
 
@@ -133,6 +148,9 @@ public:
 		linked = true;
 	}
 
+	/// <summary>
+	/// Activates the shader.
+	/// </summary>
 	void use() {
 		if (!linked)
 			throw ShaderException("Can't use shader, because it was not (successfully) compiled");
@@ -144,6 +162,9 @@ public:
 		return programHandle;
 	}
 
+	/// <summary>
+	/// Helper function for getting uniform locations associated with the given name and handling errors.
+	/// </summary>
 	int getUnifromLocation(const char* name) {
 		int location = glGetUniformLocation(programHandle, name);
 		if (location == -1)

@@ -2,6 +2,9 @@
 
 #include <vectors.h>
 
+/// <summary>
+/// Abstract class for cameras. A camera should provide a view and a projection matrix.
+/// </summary>
 class Camera {
 public:
 	vec3 eye;
@@ -20,6 +23,9 @@ public:
 	virtual mat4 projection() = 0;
 };
 
+/// <summary>
+/// Perspective implementation of the Camera class.
+/// </summary>
 class PerspectiveCamera : public Camera {
 private:
 	float frontPlane;
@@ -36,6 +42,10 @@ public:
 	mat4 projection();
 };
 
+
+/// <summary>
+/// Orthographic implementation of the Camera class.
+/// </summary>
 class OrthographicCamera : public Camera {
 public:
 	float height;
