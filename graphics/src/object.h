@@ -6,14 +6,26 @@
 #include<vector>
 #include<shaderprogram.h>
 
-//Responsible for freeing geometries
+/// <summary>
+/// A generic object to be used in the game world.
+/// TAKES OWNERSHIP of geometry.
+/// </summary>
+/// <remarks>
+/// Has a transform (position, scale, rotation).
+/// Can have a geometry.
+/// Must have a material if it has a geometry.
+/// Can have a parent. 
+/// Transforms from parents are applied to children.
+/// </remarks>
 class Object {
 protected:
 
 	Geometry* geometry = nullptr;
 	Object* parent = nullptr;
 
+	/// <returns>The modelling transformation matrix of the object without the parent transforms</returns>
 	mat4 ownModel();
+	/// <returns>The inverse of the modelling transformation matrix</returns>
 	mat4 ownModelInverse();
 	
 public:
@@ -32,13 +44,24 @@ public:
 		this->material = material;
 	};
 
+	/// <summary>
+	/// Changes the geometry of the object.
+	/// </summary>
 	void setGeometry(Geometry* geometry);
-
+	
+	/// <summary>
+	/// Draws the geometry of the object with it's material.
+	/// </summary>
 	void draw();
 
+	/// <returns>The modeling transformation matrix with the parent transforms applied.</returns>
 	mat4 getModel();
 
+	/// <returns>The inverse of the modeling transformation matrix with the parent transforms applied</returns>
 	mat4 getModelInverse();
 
+	/// <summary>
+	/// Changes the objects parent
+	/// </summary>
 	void setParent(Object* parent);
 };
