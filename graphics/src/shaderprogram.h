@@ -45,6 +45,17 @@ class ShaderProgram {
 	unsigned int programHandle = 0;
 	bool linked = false;
 
+	/// <summary>
+	/// Helper function for getting uniform locations associated with the given name and handling errors.
+	/// </summary>
+	int getUnifromLocation(const char* name) {
+		int location = glGetUniformLocation(programHandle, name);
+		if (location == -1)
+			throw ShaderException("Invalid uniform name");
+
+		return location;
+	}
+
 public:
 
 	/// <summary>
@@ -156,21 +167,6 @@ public:
 			throw ShaderException("Can't use shader, because it was not (successfully) compiled");
 
 		glUseProgram(programHandle);
-	}
-
-	unsigned int getHandle() {
-		return programHandle;
-	}
-
-	/// <summary>
-	/// Helper function for getting uniform locations associated with the given name and handling errors.
-	/// </summary>
-	int getUnifromLocation(const char* name) {
-		int location = glGetUniformLocation(programHandle, name);
-		if (location == -1)
-			throw ShaderException("Invalid uniform name");
-
-		return location;
 	}
 
 	void setUniform(const char* name, unsigned int u) {
