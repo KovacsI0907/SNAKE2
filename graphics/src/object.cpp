@@ -36,12 +36,8 @@ void Object::setParent(Object* parent) {
 	this->parent = parent;
 }
 
-void Object::setGeometry(Geometry* geometry) {
-	if (this->geometry) {
-		delete geometry;
-	}
-
-	this->geometry = geometry;
+void Object::setGeometry(std::unique_ptr<Geometry> geometry) {
+	this->geometry = std::move(geometry);
 	if (!geometry->created())
 		geometry->create();
 }
