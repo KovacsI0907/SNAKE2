@@ -34,56 +34,37 @@ void Scene::loadUniforms(Object* object) {
 	shaderProgram->setUniform("Minv", Minv);
 }
 
-void Scene::addObject(Object* object) {
-	// Check if the object pointer already exists in the vector
-	auto it = std::find(objects.begin(), objects.end(), object);
-	if (it == objects.end()) {
-		objects.push_back(object);
-	}
+void Scene::addObject(std::unique_ptr<Object> object) {
+	objects.push_back(std::move(object));
 }
 
-void Scene::addTexture(Texture* texture) {
-	// Check if the texture pointer already exists in the vector
-	auto it = std::find(textures.begin(), textures.end(), texture);
-	if (it == textures.end()) {
-		textures.push_back(texture);
-		if (!texture->created()) {
-			texture->create();
+void Scene::addTexture(std::unique_ptr<Texture> texture) {
+	if (!texture->created())
+		texture->create();
+	textures.push_back(std::move(texture));
+}
+
+void Scene::deleteObject(Object* object) {
+	for (auto it = objects.begin(); it != objects.end(); it++) {
+		if (it->get() == object) {
+			objects.erase(it);
+			break;
 		}
 	}
 }
 
-void Scene::deleteObject(Object* object) {
-	auto it = std::find(objects.begin(), objects.end(), object);
-
-	if (it != objects.end()) {
-		objects.erase(it);
-		delete object;
-	}
-}
-
 void Scene::deleteTexture(Texture* texture) {
-	auto it = std::find(textures.begin(), textures.end(), texture);
-
-	if (it != textures.end()) {
-		textures.erase(it);
-		delete texture;
+	for (auto it = textures.begin(); it != textures.end(); it++) {
+		if (it->get() == texture) {
+			textures.erase(it);
+			break;
+		}
 	}
 }
 
 void Scene::drawAll() {
-	for (Object* object : objects) {
-		loadUniforms(object);
+	for (auto& object : objects) {
+		loadUniforms(object.get());
 		object->draw();
-	}
-}
-
-Scene::~Scene() {
-	for (Object* object : objects) {
-		delete object;
-	}
-
-	for (Texture* texture : textures) {
-		delete texture;
 	}
 }

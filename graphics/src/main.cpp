@@ -13,6 +13,7 @@
 #include <scene.h>
 #include <exception>
 #include <chesstex.h>
+#include <memory>
 
 
 const unsigned int windowWidth = 640, windowHeight = 480;
@@ -26,11 +27,11 @@ OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (flo
 Scene scene = Scene();
 Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
 
-ChessTex* chessTex = new ChessTex(vec4(1, 0, 0, 1), vec4(0, 0, 1, 1));
-Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex};
+auto chessTex = std::make_unique<ChessTex>(vec4(1, 0, 0, 1), vec4(0, 0, 1, 1));
+Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
 Material triMat = { vec4(1, 1, 1, 1), vec4(1, 1, 0, 0), vec4(0,0,0,1), 25.0f };
-Cylinder* cyl = new Cylinder(50);
-Triangle* tri = new Triangle(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
+auto cyl = std::make_unique<Cylinder>(10);
+auto tri = std::make_unique<Triangle>(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
 
 
 void initialize() {
@@ -42,12 +43,9 @@ void initialize() {
 	scene.camera = &pCam;
 	scene.light = light;
 
-	Object* c = new Object(cyl, cylMat);
-	Object* t = new Object(tri, triMat);
-
-	scene.addObject(c);
-	scene.addObject(t);
-	scene.addTexture(chessTex);
+	scene.addObject(std::make_unique<Object>(std::move(cyl), cylMat));
+	scene.addObject(std::make_unique<Object>(std::move(tri), triMat));
+	scene.addTexture(std::move(chessTex));
 	
 	try {
 		shaderProgramGouraud.compile();

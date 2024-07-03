@@ -5,6 +5,7 @@
 #include<vectors.h>
 #include<vector>
 #include<shaderprogram.h>
+#include<memory>
 
 /// <summary>
 /// A generic object to be used in the game world.
@@ -20,7 +21,7 @@
 class Object {
 protected:
 
-	Geometry* geometry = nullptr;
+	std::unique_ptr<Geometry> geometry = nullptr;
 	Object* parent = nullptr;
 
 	/// <returns>The modelling transformation matrix of the object without the parent transforms</returns>
@@ -37,8 +38,8 @@ public:
 
 	Object() {};
 
-	Object(Geometry* geometry, Material material) {
-		this->geometry = geometry;
+	Object(std::unique_ptr<Geometry> geometryPtr, Material material) {
+		geometry = std::move(geometryPtr);
 		if (!geometry->created())
 			geometry->create();
 		this->material = material;
@@ -47,7 +48,7 @@ public:
 	/// <summary>
 	/// Changes the geometry of the object.
 	/// </summary>
-	void setGeometry(Geometry* geometry);
+	void setGeometry(std::unique_ptr<Geometry> geometry);
 	
 	/// <summary>
 	/// Draws the geometry of the object with it's material.

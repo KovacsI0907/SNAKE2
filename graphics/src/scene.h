@@ -4,6 +4,7 @@
 #include <object.h>
 #include <camera.h>
 #include <light.h>
+#include <memory.h>
 
 //Takes in dynamically allocated objects
 //Responsible for freeing objects and lights
@@ -13,8 +14,8 @@
 /// TAKES OWNERSHIP of Objects and Textures added to it.
 /// </summary>
 class Scene {
-	std::vector<Object*> objects;
-	std::vector<Texture*> textures;
+	std::vector<std::unique_ptr<Object>> objects;
+	std::vector<std::unique_ptr<Texture>> textures;
 	void loadUniforms(Object* object);
 	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
 
@@ -28,13 +29,13 @@ public:
 	/// <summary>
 	/// Adds and takes ownership of the given object.
 	/// </summary>
-	void addObject(Object* object);
+	void addObject(std::unique_ptr<Object> object);
 
 	/// <summary>
 	/// Adds and takes ownership of the given texture.
 	/// </summary>
 	/// <param name="texture"></param>
-	void addTexture(Texture* texture);
+	void addTexture(std::unique_ptr<Texture> texture);
 
 	/// <summary>
 	/// Deletes and frees the given object.
@@ -51,5 +52,5 @@ public:
 	/// </summary>
 	void drawAll();
 
-	~Scene();
+	~Scene() = default;
 };
