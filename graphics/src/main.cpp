@@ -20,9 +20,11 @@ const unsigned int windowWidth = 640, windowHeight = 480;
 
 ShaderProgram shaderProgramGouraud = ShaderProgram(GOURAUD_VERTEX, GOURAUD_FRAGMENT);
 ShaderProgram shaderProgramPhong = ShaderProgram(PHONG_VERTEX, PHONG_FRAGMENT);
+ShaderProgram* activeShaders = &shaderProgramGouraud;
 
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, 3, 100);
+Camera* activeCamera = &pCam;
 
 Scene scene = Scene();
 Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
@@ -39,9 +41,8 @@ void initialize() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	scene.shaderProgram = &shaderProgramGouraud;
-	scene.camera = &pCam;
 	scene.light = light;
+
 
 	scene.addObject(std::make_unique<Object>(std::move(cyl), cylMat));
 	scene.addObject(std::make_unique<Object>(std::move(tri), triMat));
@@ -49,8 +50,8 @@ void initialize() {
 	
 	try {
 		shaderProgramGouraud.compile();
-		shaderProgramGouraud.use();
 		shaderProgramPhong.compile();
+		activeShaders->use();
 	}
 	catch (const std::exception& e) {
 		printf("%s\n", e.what());
@@ -61,29 +62,29 @@ void onDisplay() {
 	glClearColor(0.2f, 0.2f, 0.2f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene.drawAll();
+	scene.renderScene(activeCamera, activeShaders);
 
 	glutSwapBuffers();
 }
 
 void onKeyPressed(unsigned char key, int x, int y) {
 	if (key == 'c') {
-		if (scene.camera == &pCam) {
-			scene.camera = &oCam;
+		if (activeCamera == &pCam) {
+			activeCamera = &oCam;
 		}
 		else {
-			scene.camera = &pCam;
+			activeCamera = &pCam;
 		}
 	}
 
 	if (key == 's') {
-		if (scene.shaderProgram == &shaderProgramGouraud) {
-			scene.shaderProgram = &shaderProgramPhong;
+		if (activeShaders == &shaderProgramGouraud) {
+			activeShaders = &shaderProgramPhong;
 		}
 		else {
-			scene.shaderProgram = &shaderProgramGouraud;
+			activeShaders = &shaderProgramGouraud;
 		}
-		scene.shaderProgram->use();
+		activeShaders->use();
 	}
 	glutPostRedisplay();
 }

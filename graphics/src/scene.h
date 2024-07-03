@@ -16,14 +16,10 @@
 class Scene {
 	std::vector<std::unique_ptr<Object>> objects;
 	std::vector<std::unique_ptr<Texture>> textures;
-	void loadUniforms(Object* object);
+	void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
 	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
 
 public:
-
-	//TODO make getters/setters
-	ShaderProgram* shaderProgram;
-	Camera* camera;
 	Light light;
 
 	/// <summary>
@@ -50,7 +46,7 @@ public:
 	/// <summary>
 	/// Draws all added objects.
 	/// </summary>
-	void drawAll();
+	void renderScene(Camera* camera, ShaderProgram* shaderProgram);
 
 	~Scene() = default;
 };
