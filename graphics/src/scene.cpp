@@ -1,7 +1,7 @@
 #include <scene.h>
 #include <texture.h>
 
-void Scene::loadUniforms(Object* object) {
+void Scene::loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram) {
 	mat4 M = object->getModel();
 	mat4 MVP = M * camera->view() * camera->projection();
 	mat4 Minv = object->getModelInverse();
@@ -62,9 +62,9 @@ void Scene::deleteTexture(Texture* texture) {
 	}
 }
 
-void Scene::drawAll() {
+void Scene::renderScene(Camera* camera, ShaderProgram* shaderProgram) {
 	for (auto& object : objects) {
-		loadUniforms(object.get());
+		loadUniforms(object.get(), camera, shaderProgram);
 		object->draw();
 	}
 }
