@@ -19,8 +19,18 @@ class Scene {
 	void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
 	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
 
+	unsigned int depthMapFBO;
+	unsigned int depthMapTexture;
+
+	OrthographicCamera getDepthCam(float maxSceneRadius, vec4 lightPos);
+
 public:
 	Light light;
+
+	/// <summary>
+	/// Needs to be called before render! Allocates objects for shadow rendering.
+	/// </summary>
+	void create();
 
 	/// <summary>
 	/// Adds and takes ownership of the given object.
@@ -46,7 +56,18 @@ public:
 	/// <summary>
 	/// Draws all added objects.
 	/// </summary>
-	void renderScene(Camera* camera, ShaderProgram* shaderProgram);
+	void renderScene(Camera* camera, ShaderProgram* shaderProgram, int winWidth, int winHeight);
+
+	/// <summary>
+	/// Renders the scene with shadows
+	/// </summary>
+	/// <param name="normalCamera">Camera used for rendering the scene</param>
+	/// <param name="maxSceneRadius">Radius of the smallest sphere with an origin in (0,0,0) that fits all objects in the scene</param>
+	/// <param name="normalShader">Shader used for rendering the scene</param>
+	/// <param name="shadowShader">Shader used for rendering a depth map</param>
+	/// <param name="windowWidth">Width of render area</param>
+	/// <param name="windowHeight">Height of render area</param>
+	void Scene::render(Camera* normalCamera, float maxSceneRadius, ShaderProgram* normalShader, ShaderProgram* shadowShader, int windowWidth, int windowHeight);
 
 	~Scene() = default;
 };
