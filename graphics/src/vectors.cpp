@@ -18,6 +18,25 @@ mat4 TranslateMatrix(vec3 t) {
     );
 }
 
+mat4 RotationMatrix(vec3 axis, float angle) {
+    float c = cosf(angle);
+    float s = sinf(angle);
+    float t = 1.0 - c;
+
+    axis = normalize(axis);
+
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return mat4(
+        t * x * x + c, t * x * y - s * z, t * x * z + s * y, 0.0f,
+        t * x * y + s * z, t * y * y + c, t * y * z - s * x, 0.0f,
+        t * x * z - s * y, t * y * z + s * x, t * z * z + c, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+}
+
 vec4 operator*(const vec4& v, const mat4& m) {
     return vec4(
         v.x * m.rows[0][0] + v.y * m.rows[1][0] + v.z * m.rows[2][0] + v.w * m.rows[3][0],
