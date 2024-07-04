@@ -22,13 +22,10 @@ void Texture::activate(ShaderProgram* shaderProgram) {
 	if (!created()) {
 		create();
 	}
-
-	// idk why
-	int sampler = 0;
 	
-	shaderProgram->setUniform("sampler", sampler);
+	shaderProgram->setUniform("diffuseTexture", 0);
 
-	glActiveTexture(GL_TEXTURE0 + sampler);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 }
 
