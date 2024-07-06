@@ -73,7 +73,6 @@ OrthographicCamera Scene::getDepthCam(float maxSceneRadius, vec4 lightPos) {
 }
 
 void Scene::render(Camera* normalCamera, float maxSceneRadius, ShaderProgram* normalShader, ShaderProgram* shadowShader, int windowWidth, int windowHeight) {
-	int depthMapResolution = 1024;
 	//depth map
 
 	//create depth camera
