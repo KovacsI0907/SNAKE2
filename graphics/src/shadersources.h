@@ -114,7 +114,7 @@ const char* GOURAUD_FRAGMENT = R"(
 	void main() {
 
 		float depth = texture(depthMap, lightSpacePos.xy).r;
-		float eps = 0.001f;
+		float eps = 0.005f;
 		float shadowMult = depth < (lightSpacePos.z - eps) ? 0.0f : 1.0f;
 
 		if(hasTexture){
@@ -209,7 +209,7 @@ const char* PHONG_FRAGMENT = R"(
 		vec4 specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
 
 		float depth = texture(depthMap, lightSpacePos.xy).r;
-		float eps = 0.001f;
+		float eps = 0.005f;
 		float shadowMult = depth < (lightSpacePos.z - eps) ? 0.0f : 1.0f;
 
 		fragmentColor = ambient + shadowMult * (diffuse + specular);

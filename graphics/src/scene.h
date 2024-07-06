@@ -19,6 +19,7 @@ class Scene {
 	void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
 	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
 
+	int depthMapResolution = 1024;
 	unsigned int depthMapFBO;
 	unsigned int depthMapTexture;
 
