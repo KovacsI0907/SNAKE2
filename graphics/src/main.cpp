@@ -49,9 +49,18 @@ void initialize() {
 	auto quad = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
 	quad->scale = vec3(0.5, 0.5, 0.5);
 	quad->position = vec3(0, 0, 0.75);
+
+	auto sphObj = std::make_unique<Object>(std::move(sph), cylMat);
+	sphObj->position = vec3(0, -1, 1);
+	sphObj->scale = vec3(0.5, 0.5, 0.5);
+
+	scene.addObject(std::move(sphObj));
+
 	scene.addObject(std::move(quad));
 	float sf = sqrtf(5.0f);
-	scene.addObject(std::make_unique<Object>(std::make_unique<Quad>(vec3(-sf, -sf, 0), vec3(-sf, sf, 0), vec3(sf, -sf, 0), vec3(sf, sf, 0)), triMat));
+	auto ground = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, -1, 0), vec3(-1, 1, 0), vec3(1, -1, 0), vec3(1, 1, 0)), cylMat);
+	ground->scale = vec3(sf, sf, sf);
+	scene.addObject(std::move(ground));
 	scene.addTexture(std::move(chessTex));
 
 	scene.create();
