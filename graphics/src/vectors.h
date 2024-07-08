@@ -188,6 +188,8 @@ struct mat4 {
     }
 };
 
+mat4 RotationMatrix(vec3 axis, float angle);
+
 mat4 ScaleMatrix(vec3 s);
 
 mat4 TranslateMatrix(vec3 t);
