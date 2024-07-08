@@ -28,15 +28,15 @@ OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (flo
 Scene scene = Scene();
 Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
 
-ChessTex* chessTex = new ChessTex(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1));
+ChessTex* chessTex = new ChessTex(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1), 50,1);
 Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex};
 Material triMat = { vec4(1, 1, 1, 1), vec4(1, 1, 0, 0), vec4(0,0,0,1), 25.0f };
 Material reaMat = { vec4(1, 1, 1, 1), vec4(233.0f / 255, 211.0f / 255, 173.0f / 255, 1), vec4(0,0,0,1), 25.0f };
 Cylinder* cyl = new Cylinder(50);
 Triangle* tri = new Triangle(vec3(-1.5, 0, 0), vec3(1.5, 0, 0), vec3(0, 0, 1));
 Sphere* sph = new Sphere(50);
-Readable* rea = new Readable("untitled.obj");
-Readable* rea2 = new Readable("torus.obj");
+//Readable* rea = new Readable("untitled.obj");
+Readable* rea2 = new Readable("sphere.obj");
 
 
 
@@ -49,15 +49,15 @@ void initialize() {
 	scene.camera = &pCam;
 	scene.light = light;
 
-	Object* r = new Object(rea, cylMat);
+	//Object* r = new Object(rea, cylMat);
 	Object* r2 = new Object(rea2, cylMat);
 	Object* c = new Object(cyl, cylMat);
 	Object* t = new Object(tri, triMat);
 	Object* s = new Object(sph, cylMat);
 
 	//scene.addObject(r);
-	scene.addObject(r2);
-	//scene.addObject(s);
+	//scene.addObject(r2);
+	scene.addObject(s);
 	//scene.addObject(c);
 	//scene.addTexture(chessTex);
 	//scene.addObject(t);

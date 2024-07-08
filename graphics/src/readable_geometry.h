@@ -15,16 +15,13 @@ class Readable : public Geometry
 public:
     Readable(string file)
     {
-        std::vector<vec3> rawVertices;
-        std::vector<vec3> rawNormals;
-        std::vector<vec2> rawUvs;
-        string filaname = file, token, token2;
+        vector<vec3> rawVertices, rawNormals;
+        vector<vec2> rawUvs;
+        string filaname = file, token, token2, line;
         fstream fs;
         fs.open(filaname);
-        string line;
         float x,y,z;
         int counter = 0;
-        int counterx = 0, countery = 0, counterz = 0;
         if (!fs.is_open())
         {           
             //throw error
@@ -46,15 +43,19 @@ public:
                         {
                             //error
                         }
-                        if(counter == 1)
+                        else if(counter == 1)
                             x = stof(token);
                         else if (counter == 2)
                             y = stof(token);
                         else
                             z = stof(token);
                     }
-                    rawVertices.push_back(vec3(x, y, z));
-                    counterx++;
+                    if(counter == 3)
+                        rawVertices.push_back(vec3(x, y, z));
+                    else
+                    {
+                        //error
+                    }
                 }
                 else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
                 {
@@ -74,8 +75,12 @@ public:
                         else
                             z = stof(token);
                     }
-                    rawNormals.push_back(vec3(x, y, z));
-                    countery++;
+                    if(counter == 3)
+                        rawNormals.push_back(vec3(x, y, z));
+                    else
+                    {
+                        //error
+                    }
                 }
                 else if (line[0] == 'v' && line[1] == 't' && line[2] == ' ')
                 {
@@ -93,8 +98,12 @@ public:
                         else 
                             y = stof(token);
                     }
-                    rawUvs.push_back(vec2(x, y));
-                    counterz++;
+                    if(counter == 2)
+                        rawUvs.push_back(vec2(x, y));
+                    else
+                    {
+                        //error
+                    }
                 }
                 else if (line[0] == 'f' && line[1] == ' ')
                 {
@@ -110,18 +119,25 @@ public:
                             {
                                 //error
                             }
-                            if (counter == 1)
+                            else if (counter == 1)
                                 vertices.push_back(rawVertices[stoi(token2)-1]);
-                            if (counter == 2)
+                            else if (counter == 2)
                                 uvs.push_back(rawUvs[stoi(token2)-1]);
-                            if (counter == 3)
+                            else
                                 normals.push_back(rawNormals[stoi(token2)-1]);
 
+                        }
+                        if (counter != 3)
+                        {
+                            //error
                         }
                     }
                 }
             }
         }
+        rawNormals.clear();
+        rawUvs.clear();
+        rawUvs.clear();
     }
     virtual void draw() {
         Geometry::draw(GL_TRIANGLES);

@@ -6,15 +6,15 @@
 
 class ChessTex : public Texture {
 	std::vector<vec4> pixels;
-
+	int widht, height;
 	float* getPixels() {
 		return &pixels[0].x;
 	}
 public:
-	ChessTex(vec4 color1, vec4 color2) {
-		int widht = 50, height = 50;
+	ChessTex(vec4 color1, vec4 color2, int awidht, int aheight) {
 		int alapcol = 1, col = 0;;
-
+		widht = awidht;
+		height = aheight;
 
 		for (int i = 0; i < height; i++)
 		{
@@ -36,10 +36,10 @@ public:
 	}
 
 	int getWidth() {
-		return 50;
+		return widht;
 	}
 
 	int getHeight() {
-		return 50;
+		return height;
 	}
 };
