@@ -50,3 +50,26 @@ mat4 OrthographicCamera::view() {
 mat4 OrthographicCamera::projection() {
 	return ScaleMatrix(vec3(2 / (aspectRatio * height), 2 / height, -2 / depth)) * TranslateMatrix(vec3(0, 0, -0.5));
 }
+
+void Camera::rotateAroundLookat(vec2 rotation) {
+	// move lookAt to origin
+	vec4 newEye = vec4(eye - lookAt, 0);
+
+
+	// rotate
+	newEye = newEye * RotationMatrix(preferredUp, rotation.x);
+	vec3 lookatToEye = eye - lookAt;
+
+	vec3 right = cross(preferredUp, lookatToEye);
+	newEye = newEye * RotationMatrix(right, rotation.y);
+
+	// move back to lookat
+	eye = newEye.xyz() + lookAt;
+}
+
+void Camera::moveCloserToLookat(float multiplier) {
+	vec3 newEye = eye - lookAt;
+	newEye = newEye * multiplier;
+
+	eye = newEye + lookAt;
+}

@@ -38,6 +38,10 @@ auto sph = std::make_unique<Sphere>(50);
 
 float sceneRadius = 5.0f;
 
+vec2 mousePos = vec2(0, 0);
+vec2 lastMousePos = vec2(0, 0);
+vec2 mousePosDelta = vec2(0, 0);
+
 
 void initialize() {
 
@@ -107,6 +111,36 @@ void onKeyPressed(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void onPressedMouseMovement(int x, int y) {
+	mousePos = vec2(x, y);
+	mousePosDelta = mousePos - lastMousePos;
+	lastMousePos = mousePos;
+	oCam.rotateAroundLookat(mousePosDelta / 100);
+	pCam.rotateAroundLookat(mousePosDelta / 100);
+	glutPostRedisplay();
+}
+
+void onMouseWheel(int wheel, int direction, int x, int y) {
+	if (direction == 1) {
+		oCam.moveCloserToLookat(1 / 1.1f);
+		pCam.moveCloserToLookat(1 / 1.1f);
+	}
+	else {
+		oCam.moveCloserToLookat(1.1f);
+		pCam.moveCloserToLookat(1.1f);
+	}
+
+	glutPostRedisplay();
+}
+
+void onMouse(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON) {
+		if (state == GLUT_DOWN) {
+			mousePos = lastMousePos = vec2(x, y);
+		}
+	}
+}
+
 int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 	glutInitContextVersion(3,3);
@@ -121,6 +155,9 @@ int main(int argc, char* argv[]) {
 
 	glutDisplayFunc(onDisplay);
 	glutKeyboardFunc(onKeyPressed);
+	glutMouseFunc(onMouse);
+	glutMotionFunc(onPressedMouseMovement);
+	glutMouseWheelFunc(onMouseWheel);
 
 	glutMainLoop();
 	return 1;
