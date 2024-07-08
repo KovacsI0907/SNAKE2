@@ -13,26 +13,30 @@
 #include <scene.h>
 #include <exception>
 #include <chesstex.h>
+#include <memory>
+#include <quad.h>
 #include <sph.h>
 
 
-const unsigned int windowWidth = 640, windowHeight = 480;
+const unsigned int windowWidth = 600, windowHeight = 600;
 
 ShaderProgram shaderProgramGouraud = ShaderProgram(GOURAUD_VERTEX, GOURAUD_FRAGMENT);
 ShaderProgram shaderProgramPhong = ShaderProgram(PHONG_VERTEX, PHONG_FRAGMENT);
+ShaderProgram depthShader = ShaderProgram(DEPTH_VERTEX, DEPTH_FRAGMENT);
 ShaderProgram* activeShaders = &shaderProgramGouraud;
 
-PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, M_PI / 3);
-OrthographicCamera oCam = OrthographicCamera(vec3(1, -2, 2), vec3(0, 0, 0), (float)windowWidth / windowHeight, 3, 100);
+PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -3, 3), vec3(0, 0, 0), (float)windowWidth / windowHeight, M_PI / 3);
+OrthographicCamera oCam = OrthographicCamera(vec3(1, -5, 5), vec3(0, 0, 0), (float)windowWidth / windowHeight, 10, 100);
 Camera* activeCamera = &pCam;
 
 Scene scene = Scene();
-Light light = { vec4(3, -3, 3, 0), vec4(1,1,1,1) };
+Light light = { vec4(-1, -3, 3, 0), vec4(1,1,1,1) };
 
-ChessTex* chessTex = new ChessTex(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1), 25,25);
-Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex};
-auto sph = std::make_unique<Sphere>(500);
+auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1), 25,25);
+Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
+auto sph = std::make_unique<Sphere>(50);
 
+float sceneRadius = 5.0f;
 
 
 void initialize() {
@@ -40,11 +44,22 @@ void initialize() {
 	glViewport(0, 0, windowWidth, windowHeight);
 	glEnable(GL_DEPTH_TEST);
 	scene.light = light;
-	scene.addObject(std::make_unique<Object>(std::move(sph), cylMat));
 
+
+	auto quad = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
+	quad->scale = vec3(0.5, 0.5, 0.5);
+	quad->position = vec3(0, 0, 0.75);
+	scene.addObject(std::move(quad));
+	float sf = sqrtf(5.0f);
+	scene.addObject(std::make_unique<Object>(std::make_unique<Quad>(vec3(-sf, -sf, 0), vec3(-sf, sf, 0), vec3(sf, -sf, 0), vec3(sf, sf, 0)), triMat));
+	scene.addTexture(std::move(chessTex));
+
+	scene.create();
+	
 	try {
 		shaderProgramGouraud.compile();
 		shaderProgramPhong.compile();
+		depthShader.compile();
 		activeShaders->use();
 	}
 	catch (const std::exception& e) {
@@ -56,7 +71,7 @@ void onDisplay() {
 	glClearColor(0.2f, 0.2f, 0.2f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene.renderScene(activeCamera, activeShaders);
+	scene.render(activeCamera, sceneRadius, activeShaders, &depthShader, windowWidth, windowHeight);
 
 	glutSwapBuffers();
 }
@@ -92,7 +107,7 @@ int main(int argc, char* argv[]) {
 	glutCreateWindow(argv[0]);
 	glewExperimental = true;
 	glewInit();
-	glPointSize(5);
+
 	initialize();
 
 	glutDisplayFunc(onDisplay);

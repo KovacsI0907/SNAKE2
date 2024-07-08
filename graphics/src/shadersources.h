@@ -57,6 +57,8 @@ const char* GOURAUD_VERTEX = R"(
 	uniform mat4 M;
 	uniform mat4 Minv;
 
+	uniform mat4 lightMVP;
+
 	layout (location = 0) in vec3 mVertexPos;
 	layout (location = 1) in vec3 mNormal;
 	layout (location = 2) in vec2 uv;
@@ -66,6 +68,7 @@ const char* GOURAUD_VERTEX = R"(
 	out vec4 specular;
 	out vec4 diffuse;
 	out vec2 texCoord;
+	out vec3 lightSpacePos;
 
 	void main() {
 		gl_Position = vec4(mVertexPos, 1) * MVP;
@@ -85,6 +88,10 @@ const char* GOURAUD_VERTEX = R"(
 		specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
 
 		texCoord = uv;
+
+		vec4 lightSpacePos4 = vec4(mVertexPos, 1) * lightMVP;
+		lightSpacePos = lightSpacePos4.xyz / lightSpacePos4.w;
+		lightSpacePos = lightSpacePos * 0.5 + 0.5;
 	}
 	
 )";
@@ -92,7 +99,8 @@ const char* GOURAUD_VERTEX = R"(
 const char* GOURAUD_FRAGMENT = R"(
 	#version 330
 
-	uniform sampler2D sampler;
+	uniform sampler2D diffuseTexture;
+	uniform sampler2D depthMap;
 	uniform bool hasTexture;
 
 	in vec4 ambient;
@@ -100,13 +108,19 @@ const char* GOURAUD_FRAGMENT = R"(
 	in vec4 diffuseMult;
 	in vec4 diffuse;
 	in vec2 texCoord;
+	in vec3 lightSpacePos;
 
 	out vec4 fragmentColor;
 	void main() {
+
+		float depth = texture(depthMap, lightSpacePos.xy).r;
+		float eps = 0.005f;
+		float shadowMult = depth < (lightSpacePos.z - eps) ? 0.0f : 1.0f;
+
 		if(hasTexture){
-			fragmentColor = ambient + specular + diffuseMult * texture(sampler, texCoord);
+			fragmentColor = ambient + shadowMult * (specular + diffuseMult * texture(diffuseTexture, texCoord));
 		}else{
-			fragmentColor = ambient + specular + diffuse;
+			fragmentColor = ambient + shadowMult * (specular + diffuse);
 		}
 	}
 )";
@@ -121,6 +135,8 @@ const char* PHONG_VERTEX = R"(
 	uniform vec4 wLightPos;
 	uniform vec3 wEyePos;
 
+	uniform mat4 lightMVP;
+
 	layout (location = 0) in vec3 mVertexPos;
 	layout (location = 1) in vec3 mNormal;
 	layout (location = 2) in vec2 uv;
@@ -129,6 +145,7 @@ const char* PHONG_VERTEX = R"(
 	out vec3 wNormal;
 	out vec3 wToEye;
 	out vec2 texCoord;
+	out vec3 lightSpacePos;
 
 	void main() {
 		gl_Position = vec4(mVertexPos, 1) * MVP;
@@ -138,6 +155,10 @@ const char* PHONG_VERTEX = R"(
 		wNormal = (vec4(mNormal, 0) * Minv).xyz;
 		wToEye = wEyePos - wVertexPos.xyz/wVertexPos.w;
 		texCoord = uv;
+
+		vec4 lightSpacePos4 = vec4(mVertexPos, 1) * lightMVP;
+		lightSpacePos = lightSpacePos4.xyz / lightSpacePos4.w;
+		lightSpacePos = lightSpacePos * 0.5 + 0.5;
 	}
 )";
 
@@ -153,12 +174,15 @@ const char* PHONG_FRAGMENT = R"(
 	
 	uniform float shine;
 
-	uniform sampler2D sampler;
+	uniform sampler2D diffuseTexture;
 	uniform bool hasTexture;
+
+	uniform sampler2D depthMap;
 
 	in vec3 wToLight;
 	in vec3 wNormal;
 	in vec3 wToEye;
+	in vec3 lightSpacePos;
 
 	in vec2 texCoord;
 
@@ -177,13 +201,37 @@ const char* PHONG_FRAGMENT = R"(
 
 		vec4 diffuse = radLight * cosAngleLN;
 		if(hasTexture){
-			diffuse *= texture(sampler, texCoord);
+			diffuse *= texture(diffuseTexture, texCoord);
 		}else{
 			diffuse *= coeffDiffuse;
 		}
 
 		vec4 specular = radLight * coeffSpecular * cosAngleLN * pow(cosAngleHN, shine) / dot(L + V, L + V);
 
-		fragmentColor = ambient + diffuse + specular;
+		float depth = texture(depthMap, lightSpacePos.xy).r;
+		float eps = 0.005f;
+		float shadowMult = depth < (lightSpacePos.z - eps) ? 0.0f : 1.0f;
+
+		fragmentColor = ambient + shadowMult * (diffuse + specular);
 	}
+)";
+
+const char* DEPTH_VERTEX = R"(
+	#version 330
+	layout (location = 0) in vec3 vertex;
+	uniform mat4 lightMVP;
+
+	void main()
+	{
+		gl_Position = vec4(vertex, 1) * lightMVP;
+	}
+)";
+
+const char* DEPTH_FRAGMENT = R"(
+	#version 330
+
+	void main()
+	{             
+		// gl_FragDepth = gl_FragCoord.z;
+	}  
 )";
