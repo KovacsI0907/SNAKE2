@@ -21,6 +21,17 @@ public:
 
 	virtual mat4 view() = 0;
 	virtual mat4 projection() = 0;
+
+	/// <summary>
+	/// Rotates the camera around the lookat point
+	/// </summary>
+	/// <param name="rotation">Angle of rotation (x: horizontal rot radians, y: vertical rot radians</param>
+	void rotateAroundLookat(vec2 rotation);
+
+	/// <summary>
+	/// Moves the camera closer to the lookat point.
+	/// </summary>
+	void moveCloserToLookat(float multiplier);
 };
 
 /// <summary>
