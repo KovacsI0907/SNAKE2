@@ -24,12 +24,12 @@ mat4 Object::getModelInverse() {
 
 mat4 Object::ownModel() {
 	//TODO rotation matrix
-	return ScaleMatrix(scale) /* * RotationMatrix(rotAxis, rotAngle) */ * TranslateMatrix(position);
+	return ScaleMatrix(scale)  * RotationMatrix(rotAxis, rotAngle)  * TranslateMatrix(position);
 }
 
 mat4 Object::ownModelInverse() {
 	//TODO rotation matrix
-	return TranslateMatrix(position * (-1.0f)) /* * RotationMatrix(rotAxis, -rotAngle) */ * ScaleMatrix(scale * (1 / scale.length()));
+	return TranslateMatrix(position * (-1.0f))  * RotationMatrix(rotAxis, -rotAngle)  * ScaleMatrix(scale * (1 / scale.length()));
 }
 
 void Object::setParent(Object* parent) {

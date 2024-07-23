@@ -16,6 +16,8 @@
 #include <memory>
 #include <quad.h>
 #include <sph.h>
+#include <snake_piece.h>
+#include <obj_geometry.h>
 
 
 const unsigned int windowWidth = 600, windowHeight = 600;
@@ -32,9 +34,13 @@ Camera* activeCamera = &pCam;
 Scene scene = Scene();
 Light light = { vec4(-1, -3, 3, 0), vec4(1,1,1,1) };
 
-auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1), 25,25);
+auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1),25,25);
+auto snakeTex = std::make_unique<ChessTex>(vec4(0.1f,1,0,1), vec4(0,1,0.5f,1),1,8);
 Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
+Material snkMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, snakeTex.get()};
+auto snk = std::make_unique<SnakePiece>(0.2,0,vec2(-1,0), vec2(0,1));
 auto sph = std::make_unique<Sphere>(50);
+//auto obj = std::make_unique<Obj_geometry>("torus.obj");
 
 float sceneRadius = 5.0f;
 
@@ -52,15 +58,29 @@ void initialize() {
 
 	auto quad = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
 	quad->scale = vec3(0.5, 0.5, 0.5);
-	quad->position = vec3(0, 0, 0.75);
+	quad->position = vec3(2, 0, 0);
+	auto quad2 = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
+	quad2->scale = vec3(0.5, 0.5, 0.5);
+	quad2->position = vec3(0, 3, 0);
 
+	glPointSize(4);
+	auto snkObj = std::make_unique<Object>(std::move(snk), snkMat);
 	auto sphObj = std::make_unique<Object>(std::move(sph), cylMat);
-	sphObj->position = vec3(0, -1, 1);
-	sphObj->scale = vec3(0.5, 0.5, 0.5);
+	//auto objObj = std::make_unique<Object>(std::move(obj), cylMat);
 
-	scene.addObject(std::move(sphObj));
+	snkObj->position = vec3(0, 0, 0.3);
+	snkObj->scale = vec3(1, 1, 1);
+
+	sphObj->position = vec3(0, 0, 1);
+	sphObj->scale = vec3(1, 1, 1);
+
+	scene.addObject(std::move(snkObj));
+	//scene.addObject(std::move(objObj));
+
+	//scene.addObject(std::move(sphObj));
 
 	scene.addObject(std::move(quad));
+	scene.addObject(std::move(quad2));
 	float sf = sqrtf(5.0f);
 	auto ground = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, -1, 0), vec3(-1, 1, 0), vec3(1, -1, 0), vec3(1, 1, 0)), cylMat);
 	ground->scale = vec3(sf, sf, sf);
