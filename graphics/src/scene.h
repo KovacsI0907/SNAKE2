@@ -17,7 +17,7 @@ class Scene {
 	std::vector<std::unique_ptr<Object>> objects;
 	std::vector<std::unique_ptr<Texture>> textures;
 	void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
-	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
+	vec4 La = vec4(0.2, 0.2, 0.2, 1);
 
 	int depthMapResolution = 1024;
 	unsigned int depthMapFBO;
