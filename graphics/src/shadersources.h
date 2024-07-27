@@ -1,4 +1,6 @@
-const char* PASSTHROUGH_VERTEX = R"(
+#pragma once
+
+inline const char* PASSTHROUGH_VERTEX = R"(
 	#version 330
 	precision highp float;
 
@@ -10,7 +12,7 @@ const char* PASSTHROUGH_VERTEX = R"(
 	}
 )";
 
-const char* PASSTHROUGH_FRAGMENT = R"(
+inline const char* PASSTHROUGH_FRAGMENT = R"(
 	#version 330
 	precision highp float;
 	
@@ -22,7 +24,7 @@ const char* PASSTHROUGH_FRAGMENT = R"(
 	}
 )";
 
-const char* PASSTHROUGH_GEOMETRY = R"(
+inline const char* PASSTHROUGH_GEOMETRY = R"(
 	#version 330 
 
 	layout(triangles) in;
@@ -38,7 +40,7 @@ const char* PASSTHROUGH_GEOMETRY = R"(
 	}
 )";
 
-const char* GOURAUD_VERTEX = R"(
+inline const char* GOURAUD_VERTEX = R"(
 	#version 330
 
 	uniform vec4 radAmbient;
@@ -96,7 +98,7 @@ const char* GOURAUD_VERTEX = R"(
 	
 )";
 
-const char* GOURAUD_FRAGMENT = R"(
+inline const char* GOURAUD_FRAGMENT = R"(
 	#version 330
 
 	uniform sampler2D diffuseTexture;
@@ -125,7 +127,7 @@ const char* GOURAUD_FRAGMENT = R"(
 	}
 )";
 
-const char* PHONG_VERTEX = R"(
+inline const char* PHONG_VERTEX = R"(
 	#version 330
 
 	uniform mat4 MVP;
@@ -162,7 +164,7 @@ const char* PHONG_VERTEX = R"(
 	}
 )";
 
-const char* PHONG_FRAGMENT = R"(
+inline const char* PHONG_FRAGMENT = R"(
 	#version 330
 
 	uniform vec4 radAmbient;
@@ -216,7 +218,7 @@ const char* PHONG_FRAGMENT = R"(
 	}
 )";
 
-const char* DEPTH_VERTEX = R"(
+inline const char* DEPTH_VERTEX = R"(
 	#version 330
 	layout (location = 0) in vec3 vertex;
 	uniform mat4 lightMVP;
@@ -227,7 +229,7 @@ const char* DEPTH_VERTEX = R"(
 	}
 )";
 
-const char* DEPTH_FRAGMENT = R"(
+inline const char* DEPTH_FRAGMENT = R"(
 	#version 330
 
 	void main()

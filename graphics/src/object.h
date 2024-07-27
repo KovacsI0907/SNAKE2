@@ -23,6 +23,8 @@ protected:
 
 	std::unique_ptr<Geometry> geometry = nullptr;
 	Object* parent = nullptr;
+	std::vector<Object*> children;
+	std::vector<Object*> allChildrenRec;
 
 	/// <returns>The modelling transformation matrix of the object without the parent transforms</returns>
 	mat4 ownModel();
@@ -30,6 +32,7 @@ protected:
 	mat4 ownModelInverse();
 	
 public:
+	bool castsShadow = true;
 	Material material;
 	vec3 position = vec3(0, 0, 0);
 	vec3 scale = vec3(1, 1, 1);
@@ -65,4 +68,7 @@ public:
 	/// Changes the objects parent
 	/// </summary>
 	void setParent(Object* parent);
+
+	const std::vector<Object*> getAllChildrenRecurse();
+	void getAllChildrenHelper(Object* obj);
 };

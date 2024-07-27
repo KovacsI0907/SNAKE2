@@ -17,16 +17,20 @@ class Scene {
 	std::vector<std::unique_ptr<Object>> objects;
 	std::vector<std::unique_ptr<Texture>> textures;
 	void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
-	vec4 La = vec4(0.1, 0.1, 0.1, 0.1);
 
 	int depthMapResolution = 1024;
-	unsigned int depthMapFBO;
-	unsigned int depthMapTexture;
+	unsigned int depthMapFBO = 0;
+	unsigned int depthMapTexture = 0;
 
 	OrthographicCamera getDepthCam(float maxSceneRadius, vec4 lightPos);
 
 public:
 	Light light;
+	Camera* camera;
+	vec4 La;
+	float radius = 5.0f;
+
+	Scene(Camera* cam, Light light, vec4 ambientLight) : camera(cam), light(light), La(ambientLight) {};
 
 	/// <summary>
 	/// Needs to be called before render! Allocates objects for shadow rendering.
@@ -53,7 +57,6 @@ public:
 	/// Deletes and frees the given texture.
 	/// </summary>
 	void deleteTexture(Texture* texture);
-
 	/// <summary>
 	/// Draws all added objects.
 	/// </summary>
@@ -71,4 +74,7 @@ public:
 	void Scene::render(Camera* normalCamera, float maxSceneRadius, ShaderProgram* normalShader, ShaderProgram* shadowShader, int windowWidth, int windowHeight);
 
 	~Scene() = default;
+
+	const std::vector<Object*> getShadowCasters();
+	const std::vector<Object*> getAllObjects();
 };

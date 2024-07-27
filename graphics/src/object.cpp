@@ -38,6 +38,20 @@ void Object::setParent(Object* parent) {
 
 void Object::setGeometry(std::unique_ptr<Geometry> geometry) {
 	this->geometry = std::move(geometry);
-	if (!geometry->created())
-		geometry->create();
+	if (!this->geometry->created())
+		this->geometry->create();
+}
+
+const std::vector<Object*> Object::getAllChildrenRecurse(){
+	allChildrenRec.clear();
+	getAllChildrenHelper(this);
+	return allChildrenRec;
+}
+
+void Object::getAllChildrenHelper(Object* obj) {
+	allChildrenRec.push_back(obj);
+
+	for (Object* child : obj->children) {
+		getAllChildrenHelper(child);
+	}
 }

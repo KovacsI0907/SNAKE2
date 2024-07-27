@@ -157,3 +157,26 @@ void Scene::create() {
 	// reset framebuffer for rendering visible scene
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+const std::vector<Object*> Scene::getShadowCasters() {
+	std::vector<Object*> shadowCasters;
+	for (auto& obj : objects) {
+		for (Object* child : obj->getAllChildrenRecurse()) {
+			if (child->castsShadow) {
+				shadowCasters.push_back(child);
+			}
+		}
+	}
+
+	return shadowCasters;
+}
+
+const std::vector<Object*> Scene::getAllObjects() {
+	std::vector<Object*> all;
+	for (auto& obj : objects) {
+		for (Object* child : obj->getAllChildrenRecurse()) {
+			all.push_back(child);
+		}
+	}
+	return all;
+}
