@@ -16,7 +16,15 @@ Event<void> Engine::initPostGL;
 Event<void> Engine::preDraw;
 Event<long> Engine::update;
 
+Event<char> Engine::onKeyUp;
+Event<char> Engine::onKeyDown;
+
+Event<MouseKey> Engine::onMouseUp;
+Event<MouseKey> Engine::onMouseDown;
+Event<int> Engine::onMouseScroll;
+
 long Engine::time = 0;
+bool Engine::keys[256] = { false };
 
 void Engine::initialize(int* argc, char* argv[]) {
 	// Event before opengl is initialized
@@ -47,12 +55,10 @@ void Engine::initialize(int* argc, char* argv[]) {
 
 	glutDisplayFunc(onDisplay);
 	glutIdleFunc(onIdle);
-	/*
-	glutKeyboardFunc(onKeyPressed);
 	glutMouseFunc(onMouse);
-	glutMotionFunc(onPressedMouseMovement);
+	glutKeyboardUpFunc(onKeyUpFunc);
+	glutKeyboardFunc(onKeyDownFunc);
 	glutMouseWheelFunc(onMouseWheel);
-	*/
 
 	glGenFramebuffers(1, &depthMapFBO);
 	glGenTextures(1, &depthMapTexture);
@@ -191,4 +197,43 @@ void Engine::onIdle() {
 	long deltaTime = currentTime - time;
 	time = currentTime;
 	update.notifyObservers(deltaTime);
+}
+
+void Engine::onMouse(int button, int state, int x, int y) {
+	MouseKey key;
+	switch (button) {
+	case GLUT_LEFT_BUTTON:
+		key = left;
+		break;
+	case GLUT_MIDDLE_BUTTON:
+		key = middle;
+		break;
+	case GLUT_RIGHT_BUTTON:
+		key = right;
+		break;
+	default:
+		key = left;
+	}
+
+	if (state == GLUT_UP) {
+		onMouseUp.notifyObservers(key);
+	}
+	else {
+		onMouseDown.notifyObservers(key);
+	}
+}
+
+void Engine::onKeyUpFunc(unsigned char key, int x, int y) {
+	keys[key] = false;
+	onKeyUp.notifyObservers(key);
+}
+
+void Engine::onKeyDownFunc(unsigned char key, int x, int y) {
+	keys[key] = true;
+	onKeyDown.notifyObservers(key);
+}
+
+void Engine::onMouseWheel(int button, int dir, int x, int y)
+{
+	onMouseScroll.notifyObservers(dir);
 }

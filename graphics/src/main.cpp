@@ -76,6 +76,7 @@ void init() {
 
 int main(int argc, char* argv[]) {
 	Engine::initPostGL.addObserver(std::make_shared<Observer<void>>(init));
+	Engine::onKeyUp.addObserver(std::make_shared<Observer<char>>([](char c) {printf("%c released\n", c); }));
 
 	Engine::initialize(&argc, argv);
 	Engine::activeScene = &scene;
