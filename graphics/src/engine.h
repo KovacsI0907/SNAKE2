@@ -1,3 +1,5 @@
+#pragma once
+
 #include <shaderprogram.h>
 #include <shadersources.h>
 #include <scene.h>
@@ -16,6 +18,8 @@ protected:
 	static unsigned int depthMapResolution;
 	static unsigned int depthMapFBO;
 	static unsigned int depthMapTexture;
+
+	static vec2 mouseDragPos;
 	
 	static void onDisplay();
 	static void onIdle();
@@ -42,7 +46,10 @@ public:
 	static void initialize(int* argc, char* argv[]);
 	static void start();
 	static void render(Scene* scene);
-	static void isKeyPressed(char key);
+	static bool isKeyPressed(char key);
+
+	static unsigned int getWidth();
+	static unsigned int getHeight();
 
 	static Event<void> initPreGL;
 	static Event<void> initPostGL;

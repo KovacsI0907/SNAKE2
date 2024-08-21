@@ -19,9 +19,11 @@
 #include <snake_piece.h>
 #include <obj_geometry.h>
 #include <engine.h>
+#include <cameracontrol.h>
 
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -3, 3), vec3(0, 0, 0), 1, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -5, 5), vec3(0, 0, 0), 1, 10, 100);
+CameraController cc = CameraController(&pCam);
 
 Light light = { vec4(-1, -3, 3, 0), vec4(1,1,1,1) };
 Scene scene = Scene(&pCam, light, vec4(0.1, 0.1, 0.1, 0.1));
@@ -75,7 +77,7 @@ void init() {
 
 int main(int argc, char* argv[]) {
 	Engine::initPostGL.addObserver(std::make_shared<Observer<void>>(init));
-	Engine::onKeyUp.addObserver(std::make_shared<Observer<char>>([](char c) {printf("%c released\n", c); }));
+	//Engine::onKeyUp.addObserver(std::make_shared<Observer<char>>([](char c) {printf("%c released\n", c); }));
 
 	Engine::initialize(&argc, argv);
 	Engine::activeScene = &scene;

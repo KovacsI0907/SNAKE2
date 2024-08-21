@@ -9,6 +9,7 @@ Scene* Engine::activeScene = nullptr;
 unsigned int Engine::depthMapResolution = 1024;
 unsigned int Engine::depthMapFBO = -1;
 unsigned int Engine::depthMapTexture = -1;
+vec2 Engine::mouseDragPos = vec2(0, 0);
 
 Event<void> Engine::initPreGL;
 Event<void> Engine::initPostGL;
@@ -61,6 +62,8 @@ void Engine::initialize(int* argc, char* argv[]) {
 	glutKeyboardUpFunc(onKeyUpFunc);
 	glutKeyboardFunc(onKeyDownFunc);
 	glutMouseWheelFunc(onMouseWheel);
+	glutMotionFunc(onMousePressedMovement);
+	glutPassiveMotionFunc(onMouseMovementFunc);
 
 	glGenFramebuffers(1, &depthMapFBO);
 	glGenTextures(1, &depthMapTexture);
@@ -201,7 +204,9 @@ void Engine::start() {
 
 void Engine::onMousePressedMovement(int x, int y)
 {
-	onMouseDragged.notifyObservers(vec2(x, y));
+	vec2 delta = vec2(x, y) - mouseDragPos;
+	mouseDragPos = vec2(x, y);
+	onMouseDragged.notifyObservers(delta);
 }
 
 void Engine::onIdle() {
@@ -209,6 +214,7 @@ void Engine::onIdle() {
 	long deltaTime = currentTime - time;
 	time = currentTime;
 	update.notifyObservers(deltaTime);
+	glutPostRedisplay();
 }
 
 void Engine::onMouse(int button, int state, int x, int y) {
@@ -232,6 +238,7 @@ void Engine::onMouse(int button, int state, int x, int y) {
 	}
 	else {
 		onMouseDown.notifyObservers(key);
+		mouseDragPos = vec2(x, y);
 	}
 }
 
@@ -248,4 +255,18 @@ void Engine::onKeyDownFunc(unsigned char key, int x, int y) {
 void Engine::onMouseWheel(int button, int dir, int x, int y)
 {
 	onMouseScroll.notifyObservers(dir);
+}
+
+bool Engine::isKeyPressed(char key) {
+	return keys[key];
+}
+
+unsigned int Engine::getWidth()
+{
+	return width;
+}
+
+unsigned int Engine::getHeight()
+{
+	return height;
 }
