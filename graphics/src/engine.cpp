@@ -228,11 +228,9 @@ void Engine::onMouse(int button, int state, int x, int y) {
 	}
 
 	if (state == GLUT_UP) {
-		mouseDown = false;
 		onMouseUp.notifyObservers(key);
 	}
 	else {
-		mouseDown = true;
 		onMouseDown.notifyObservers(key);
 	}
 }
