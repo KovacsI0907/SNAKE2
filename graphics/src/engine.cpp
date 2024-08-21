@@ -22,6 +22,8 @@ Event<char> Engine::onKeyDown;
 Event<MouseKey> Engine::onMouseUp;
 Event<MouseKey> Engine::onMouseDown;
 Event<int> Engine::onMouseScroll;
+Event<vec2> Engine::onMouseMovement;
+Event<vec2> Engine::onMouseDragged;
 
 long Engine::time = 0;
 bool Engine::keys[256] = { false };
@@ -188,8 +190,18 @@ void Engine::loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderP
 	shaderProgram->setUniform("Minv", Minv);
 }
 
+void Engine::onMouseMovementFunc(int x, int y)
+{
+	onMouseMovement.notifyObservers(vec2(x, y));
+}
+
 void Engine::start() {
 	glutMainLoop();
+}
+
+void Engine::onMousePressedMovement(int x, int y)
+{
+	onMouseDragged.notifyObservers(vec2(x, y));
 }
 
 void Engine::onIdle() {
@@ -216,9 +228,11 @@ void Engine::onMouse(int button, int state, int x, int y) {
 	}
 
 	if (state == GLUT_UP) {
+		mouseDown = false;
 		onMouseUp.notifyObservers(key);
 	}
 	else {
+		mouseDown = true;
 		onMouseDown.notifyObservers(key);
 	}
 }

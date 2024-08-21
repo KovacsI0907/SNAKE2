@@ -22,10 +22,9 @@
 
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -3, 3), vec3(0, 0, 0), 1, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -5, 5), vec3(0, 0, 0), 1, 10, 100);
-Camera* activeCamera = &pCam;
 
 Light light = { vec4(-1, -3, 3, 0), vec4(1,1,1,1) };
-Scene scene = Scene(activeCamera, light, vec4(0.1, 0.1, 0.1, 0.1));
+Scene scene = Scene(&pCam, light, vec4(0.1, 0.1, 0.1, 0.1));
 
 auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1),25,25);
 auto snakeTex = std::make_unique<ChessTex>(vec4(0.1f,1,0,1), vec4(0,1,0.5f,1),1,8);

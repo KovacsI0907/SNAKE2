@@ -23,6 +23,8 @@ protected:
 	static void onKeyUpFunc(unsigned char key, int x, int y);
 	static void onKeyDownFunc(unsigned char key, int x, int y);
 	static void onMouseWheel(int button, int dir, int x, int y);
+	static void onMouseMovementFunc(int x, int y);
+	static void onMousePressedMovement(int x, int y);
 	static OrthographicCamera getDepthCam(float shadowRadius, vec4 lightPos);
 	static void loadUniforms(Object* object, Camera* camera, ShaderProgram* shaderProgram);
 
@@ -54,5 +56,8 @@ public:
 	static Event<MouseKey> onMouseUp;
 	static Event<MouseKey> onMouseDown;
 	static Event<int> onMouseScroll;
+
+	static Event<vec2> onMouseMovement;
+	static Event<vec2> onMouseDragged;
 
 };
