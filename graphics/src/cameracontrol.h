@@ -96,7 +96,6 @@ private:
 
 	void elevate(long deltaTime, bool up) {
 		float zDelta = elevateMultiplier * distanceFromOrig() * (up?1.0f:-1.0f) * deltaTime / 1000.0f;
-		printf("zDelta: %f\n", zDelta);
 		lookAt.z += zDelta;
 		eye.z += zDelta;
 	}
