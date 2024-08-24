@@ -20,6 +20,8 @@
 #include <obj_geometry.h>
 #include <engine.h>
 #include <cameracontrol.h>
+#include <filesystem>
+#include <image.h>
 
 PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -3, 3), vec3(0, 0, 0), 1, M_PI / 3);
 OrthographicCamera oCam = OrthographicCamera(vec3(1, -5, 5), vec3(0, 0, 0), 1, 10, 100);
@@ -30,14 +32,20 @@ Scene scene = Scene(&pCam, light, vec4(0.1, 0.1, 0.1, 0.1));
 
 auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1),25,25);
 auto snakeTex = std::make_unique<ChessTex>(vec4(0.1f,1,0,1), vec4(0,1,0.5f,1),1,8);
-Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
+auto testBmp = std::make_shared<BmpImage>(std::filesystem::path("../assets/testing/bmp_24.bmp"));
+auto imageTex = std::make_unique<ImageTexture>(testBmp);
+Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, imageTex.get()};
 Material snkMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, snakeTex.get()};
 auto snk = std::make_unique<SnakePiece>(0.2,0,vec2(-1,0), vec2(0,1));
 auto sph = std::make_unique<Sphere>(50);
 //auto obj = std::make_unique<Obj_geometry>("torus.obj");
 
-
 void init() {
+	std::cout << std::filesystem::current_path() << std::endl;
+
+	testBmp->load();
+	
+
 	scene.light = light;
 
 
@@ -48,11 +56,15 @@ void init() {
 	quad2->scale = vec3(0.5, 0.5, 0.5);
 	quad2->position = vec3(0, 3, 0);
 
+	auto cylinder = std::make_unique<Object>(std::make_unique<Cylinder>(20), cylMat);
+	cylinder->position = vec3(0, 0, 2);
+	scene.addObject(std::move(cylinder));
+
 	auto snkObj = std::make_unique<Object>(std::move(snk), snkMat);
 	auto sphObj = std::make_unique<Object>(std::move(sph), cylMat);
 	//auto objObj = std::make_unique<Object>(std::move(obj), cylMat);
 
-	snkObj->position = vec3(0, 0, 0.3);
+	snkObj->position = vec3(0, 0, 0.3f);
 	snkObj->scale = vec3(1, 1, 1);
 
 	sphObj->position = vec3(0, 0, 1);

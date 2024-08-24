@@ -32,3 +32,20 @@ void Texture::activate(ShaderProgram* shaderProgram) {
 Texture::~Texture() {
 	glDeleteTextures(1, &textureId);
 }
+
+const float* ImageTexture::getPixels()
+{
+	return image->getPixelArray();
+}
+
+int ImageTexture::getWidth()
+{
+	return image->getWidth();
+}
+
+int ImageTexture::getHeight()
+{
+	return image->getHeight();
+}
+
+ImageTexture::~ImageTexture() = default;

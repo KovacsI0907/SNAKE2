@@ -7,7 +7,7 @@
 class ChessTex : public Texture {
 	std::vector<vec4> pixels;
 	int widht, height;
-	float* getPixels() {
+	const float* getPixels() {
 		return &pixels[0].x;
 	}
 public:
