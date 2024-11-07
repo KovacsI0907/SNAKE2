@@ -16,7 +16,7 @@ class CameraController {
 	vec3 eye = vec3(1, 1, 1);
 
 public:
-	CameraController(Camera* cam) {
+	CameraController(Camera* cam) : eye(cam->eye), lookAt(cam->lookAt) {
 		this->cam = cam;
 		Engine::onMouseDragged.addObserver(std::make_shared<Observer<vec2>>([this](vec2 v) { rotate(v); }));
 		Engine::onMouseScroll.addObserver(std::make_shared<Observer<int>>([this](int i) { zoom(i); }));
