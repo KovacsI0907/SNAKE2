@@ -74,3 +74,8 @@ Build the project:
 Alternatively, if you are using the Visual Studio compiler, you can look for the solution file (.sln) in the build directory and open the project with Visual Studio.
 
 (This project does not support platforms other than windows yet.)
+
+# Acknowledgement
+This project uses:
+- __FreeGLUT__ for window creation and handling user inputs ([FreeGLUT website](https://freeglut.sourceforge.net/))
+- __GLEW__ to make working with openGL much easier ([GLEW website](https://freeglut.sourceforge.net/))
