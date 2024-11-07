@@ -21,64 +21,93 @@
 #include <engine.h>
 #include <cameracontrol.h>
 
-PerspectiveCamera pCam = PerspectiveCamera(vec3(1, -3, 3), vec3(0, 0, 0), 1, M_PI / 3);
-OrthographicCamera oCam = OrthographicCamera(vec3(1, -5, 5), vec3(0, 0, 0), 1, 10, 100);
-CameraController cc = CameraController(&pCam);
+
+// Define global objects like lights and cameras
+PerspectiveCamera perspCam = PerspectiveCamera(vec3(3, -3, 2), vec3(0, 0, 0), 1, M_PI / 3);
+OrthographicCamera orthoCam = OrthographicCamera(vec3(3, -3, 2), vec3(0, 0, 0), 1, 10, 100);
+CameraController perspectiveController = CameraController(&perspCam);
+CameraController orthographicController = CameraController(&orthoCam);
 
 Light light = { vec4(-1, -3, 3, 0), vec4(1,1,1,1) };
-Scene scene = Scene(&pCam, light, vec4(0.1, 0.1, 0.1, 0.1));
+Scene scene = Scene(&orthoCam, light, vec4(0.1, 0.1, 0.1, 0.1));
 
 auto chessTex = std::make_unique<ChessTex>(vec4(184.0f/255, 135.0f/255, 98.0f/255, 1), vec4(233.0f/255, 211.0f/255, 173.0f/255, 1),25,25);
 auto snakeTex = std::make_unique<ChessTex>(vec4(0.1f,1,0,1), vec4(0,1,0.5f,1),1,8);
-Material cylMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
-Material snkMat = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, snakeTex.get()};
-auto snk = std::make_unique<SnakePiece>(0.2,0,vec2(-1,0), vec2(0,1));
-auto sph = std::make_unique<Sphere>(50);
-//auto obj = std::make_unique<Obj_geometry>("torus.obj");
+
+//create materials that use these textures
+Material chessMaterial = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, chessTex.get()};
+Material snakeMaterial = { vec4(1, 1, 1, 1), vec4(1, 0, 0, 0), vec4(1,1,1,1), 5.0f, snakeTex.get()};
+
+//load or generate geometries
+auto snakeTailGeometry = std::make_unique<SnakePiece>(0.2,0,vec2(-1,0), vec2(0,1));
+auto sphereGeometry = std::make_unique<Sphere>(50);
+auto monkeyGeometry = std::make_unique<Obj_geometry>("monkey3.obj");
 
 
+// the init function sets up the scene
+// later it will be registered to be called after opengl loaded
 void init() {
 	scene.light = light;
 
+	auto snakeTail = std::make_unique<Object>(std::move(snakeTailGeometry), snakeMaterial);
+	auto sphereObject = std::make_unique<Object>(std::move(sphereGeometry), chessMaterial);
+	auto monkeyObject = std::make_unique<Object>(std::move(monkeyGeometry), chessMaterial);
 
-	auto quad = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
-	quad->scale = vec3(0.5, 0.5, 0.5);
-	quad->position = vec3(2, 0, 0);
-	auto quad2 = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, 0, 0), vec3(-1, 0, 2), vec3(1, 0, 0), vec3(1, 0, 2)), cylMat);
-	quad2->scale = vec3(0.5, 0.5, 0.5);
-	quad2->position = vec3(0, 3, 0);
+	snakeTail->position = vec3(1, -1, 0.3);
+	snakeTail->scale = vec3(1, 1, 1);
 
-	auto snkObj = std::make_unique<Object>(std::move(snk), snkMat);
-	auto sphObj = std::make_unique<Object>(std::move(sph), cylMat);
-	//auto objObj = std::make_unique<Object>(std::move(obj), cylMat);
+	sphereObject->position = vec3(-1, -1, 1);
+	sphereObject->scale = vec3(0.5f, 0.5f, 0.5f);
 
-	snkObj->position = vec3(0, 0, 0.3);
-	snkObj->scale = vec3(1, 1, 1);
+	monkeyObject->position = vec3(0.0f, 0.0f, 1.0f);
+	monkeyObject->scale = vec3(0.5f, 0.5f, 0.5f);
 
-	sphObj->position = vec3(0, 0, 1);
-	sphObj->scale = vec3(1, 1, 1);
+	scene.addObject(std::move(monkeyObject));
+	scene.addObject(std::move(snakeTail));
+	scene.addObject(std::move(sphereObject));
 
-	scene.addObject(std::move(snkObj));
-	//scene.addObject(std::move(objObj));
-
-	//scene.addObject(std::move(sphObj));
-
-	scene.addObject(std::move(quad));
-	scene.addObject(std::move(quad2));
+	auto ground = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, -1, 0), vec3(-1, 1, 0), vec3(1, -1, 0), vec3(1, 1, 0)), chessMaterial);
 	float sf = sqrtf(5.0f);
-	auto ground = std::make_unique<Object>(std::make_unique<Quad>(vec3(-1, -1, 0), vec3(-1, 1, 0), vec3(1, -1, 0), vec3(1, 1, 0)), cylMat);
 	ground->scale = vec3(sf, sf, sf);
 	scene.addObject(std::move(ground));
 	scene.addTexture(std::move(chessTex));
+	scene.addTexture(std::move(snakeTex));
 
 	scene.create();
 }
 
+void onUpdate(long deltaTime) {
+	if (scene.getAllObjects().size() > 0) {
+		Object* firstObj = (scene.getAllObjects())[0];
+		firstObj->rotAngle += deltaTime / 1000.0f;
+		firstObj->rotAxis = vec3(0, 0, 1);
+	}
+}
+
+void onKeyPressed(char c) {
+	if (c == 'c') {
+		if (scene.camera == &perspCam) {
+			scene.camera = &orthoCam;
+		}
+		else {
+			scene.camera = &perspCam;
+		}
+	}
+}
+
 
 int main(int argc, char* argv[]) {
+	// call init after opengl has been initialized
 	Engine::initPostGL.addObserver(std::make_shared<Observer<void>>(init));
-	//Engine::onKeyUp.addObserver(std::make_shared<Observer<char>>([](char c) {printf("%c released\n", c); }));
 
+	// register update function
+	Engine::update.addObserver(std::make_shared<Observer<long>>(onUpdate));
+
+	// register keypress function
+	Engine::onKeyDown.addObserver(std::make_shared<Observer<char>>(onKeyPressed));
+
+
+	// start the program
 	Engine::initialize(&argc, argv);
 	Engine::activeScene = &scene;
 	Engine::start();
